@@ -3,10 +3,14 @@ especie_adicionar:
     controller: App\Controller\EspecieController::adicionar
     methods: [POST, HEAD, GET]
 
-
 especie_listar:
     path: especie/selecionar
     controller: App\Controller\EspecieController::selecionar
+    methods: [POST, HEAD, GET]
+
+especie_atualizar:
+    path: especie/atualizar
+    controller: App\Controller\EspecieController::atualizar
     methods: [POST, HEAD, GET]
 
 especie_remover:

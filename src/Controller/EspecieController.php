@@ -13,8 +13,6 @@ use Symfony\Component\Translation\TranslatorInterface;
 class EspecieController extends Controller
 {
 
-
-
     public function adicionar(Request $request, Autenticar $autenticar, TranslatorInterface $translator)
     {
 
@@ -24,30 +22,15 @@ class EspecieController extends Controller
                 $especie = new Especie();
                 $especie->setNomeCientifico($request->get('nome_cientifico'));
                 $especie->setCaracteristicas($request->get('caracteristicas'));
-
-                try{
-                    $entityManager->persist($especie);
-                    $entityManager->flush();
-                    $status =  $translator->trans('success');
-                    $mensagem = $translator->trans('insert');
-
-                }catch(\Doctrine\DBAL\DBALException $ex) {
-                    $status =  $translator->trans('error');
-                    $mensagem =$ex->getmessage();
-                }
+                $entityManager->persist($especie);
+                $entityManager->flush();
+                return new JsonResponse(['status' => $translator->trans('success'), 'response' => $translator->trans('insert')]);
+            }else{
+                return new JsonResponse(['status' => $translator->trans('error'), 'response' => $translator->trans('insert')]); 
             }
-        }catch(\Throwable $ex){
-                    $status =  $translator->trans('error');
-                    $mensagem =$ex->getmessage();
+        }catch(\TypeError | \Doctrine\DBAL\UniqueConstraintViolationException $ex){
+            return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
         }
-
-        return new JsonResponse(
-            [
-                'status' => $status,
-                'mensagem' => $mensagem
-            ],
-            JsonResponse::HTTP_CREATED
-        );
     }
 
 
@@ -56,20 +39,40 @@ class EspecieController extends Controller
 
         try{
             if($autenticar->token($request->headers->get('token'))){
-            $especies = $this->getDoctrine()->getRepository(Especie::class)->findAll();
-
-            $lista = array();
-            foreach ($especies as $especie) {
-                $lista[] = array(
-                                'nome_cientifico' => $especie->getNomeCientifico(), 
-                                'caracteristicas' => $especie->getCaracteristicas()
-                            );         
+                $especies = $this->getDoctrine()->getRepository(Especie::class)->findAll();
+                $lista = array();
+                foreach ($especies as $especie) {
+                    $lista[] = array(
+                                    'nome_cientifico' => $especie->getNomeCientifico(), 
+                                    'caracteristicas' => $especie->getCaracteristicas()
+                                    );         
+                }
+                return new JsonResponse(['status' => $translator->trans('success'), 'response' => $lista]);
             }
+        }catch(\TypeError $ex){
+            return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
+        }
+    }
 
-            return new JsonResponse(['status' => $translator->trans('success'), 'response' => $lista]);
 
+    public function atualizar(Request $request, Autenticar $autenticar, TranslatorInterface $translator)
+    {
+
+        try{
+            if($autenticar->token($request->headers->get('token'))){
+                $entityManager = $this->getDoctrine()->getManager();
+                $especie = $entityManager->getRepository(Especie::class)->find($request->get('nome_cientifico'));
+
+                if(!$especie) {
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
+                }else{
+                    $especie->setNomeCientifico($request->get('novo_nome_cientifico'));
+                    $especie->setCaracteristicas($request->get('caracteristicas'));
+                    $entityManager->flush();
+                    return new JsonResponse(['status' => $translator->trans('success'), 'response' => $translator->trans('update')]);
+                }
             }
-        }catch(\Throwable $ex){
+        }catch(\TypeError | \Doctrine\DBAL\Exception\InvalidArgumentException $ex){
             return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
         }
     }
@@ -80,16 +83,17 @@ class EspecieController extends Controller
 
         try{
             if($autenticar->token($request->headers->get('token'))){
-
-            $entityManager = $this->getDoctrine()->getManager();
-            $especie = $entityManager->getRepository(Especie::class)->find($request->get('nome_cientifico'));
-            $entityManager->remove($especie);
-            $entityManager->flush();
-
-            return new JsonResponse(['status' => $translator->trans('success'), 'response' => '$lista']);
-
+                $entityManager = $this->getDoctrine()->getManager();
+                $especie = $entityManager->getRepository(Especie::class)->find($request->get('nome_cientifico'));
+                if(!$especie) {
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
+                }else{
+                    $entityManager->remove($especie);
+                    $entityManager->flush();
+                    return new JsonResponse(['status' => $translator->trans('success'), 'response' => $translator->trans('delete')]);
+                }
             }
-        }catch(\Throwable $ex){
+        }catch(\TypeError | \Doctrine\DBAL\Exception\InvalidArgumentException $ex){
             return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
         }
     }
