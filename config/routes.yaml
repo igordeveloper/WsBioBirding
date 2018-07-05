@@ -1,3 +1,17 @@
-#index:
-#    path: /
-#    controller: App\Controller\DefaultController::index
+especie_adicionar:
+    path: especie/adicionar
+    controller: App\Controller\EspecieController::adicionar
+    methods: [POST, HEAD, GET]
+
+
+especie_listar:
+    path: especie/selecionar
+    controller: App\Controller\EspecieController::selecionar
+    methods: [POST, HEAD, GET]
+
+especie_remover:
+    path: especie/remover
+    controller: App\Controller\EspecieController::remover
+    methods: [POST, HEAD, GET]
+
+
