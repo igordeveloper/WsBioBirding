@@ -1,21 +1,28 @@
-especie_adicionar:
-    path: especie/adicionar
-    controller: App\Controller\EspecieController::adicionar
+species_insert:
+    path: species/insert
+    controller: App\Controller\SpeciesController::insert
     methods: [POST, HEAD, GET]
 
-especie_listar:
-    path: especie/selecionar
-    controller: App\Controller\EspecieController::selecionar
+species_select:
+    path: species/select
+    controller: App\Controller\SpeciesController::select
     methods: [POST, HEAD, GET]
 
-especie_atualizar:
-    path: especie/atualizar
-    controller: App\Controller\EspecieController::atualizar
+species_update:
+    path: species/update
+    controller: App\Controller\SpeciesController::update
     methods: [POST, HEAD, GET]
 
-especie_remover:
-    path: especie/remover
-    controller: App\Controller\EspecieController::remover
+species_delete:
+    path: species/delete
+    controller: App\Controller\SpeciesController::delete
+    methods: [POST, HEAD, GET]
+
+
+
+popularName_insert:
+    path: popularName/insert
+    controller: App\Controller\PopularNameController::insert
     methods: [POST, HEAD, GET]
 
 
