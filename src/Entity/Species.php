@@ -18,7 +18,7 @@ class Species
     private $scientific_name;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable=true)
      */
     private $characteristics;
 
@@ -49,7 +49,7 @@ class Species
         return $this->characteristics;
     }
 
-    public function setCharacteristics(string $characteristics): self
+    public function setCharacteristics(?string $characteristics): self
     {
         $this->characteristics = $characteristics;
 

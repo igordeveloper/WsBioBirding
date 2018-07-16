@@ -39,12 +39,21 @@ class SpeciesController extends Controller
 
         try{
             if($autenticar->token($request->headers->get('token'))){
-                $speciess = $this->getDoctrine()->getRepository(Species::class)->findAll();
+                $species = $this->getDoctrine()->getRepository(Species::class)->findAll();
                 $lista = array();
-                foreach ($speciess as $species) {
+
+
+
+                foreach ($species as $specie) {
+
+echo "<pre>";
+  \Doctrine\Common\Util\Debug::dump($specie->getPopularNames());
+
                     $lista[] = array(
-                                    'nome_cientifico' => $species->getScientificName(), 
-                                    'caracteristicas' => $species->getCharacteristics()
+                                    'scientific_name' => $specie->getScientificName(), 
+                                    'characteristics' => $specie->getCharacteristics(),
+                                    'names' =>$specie->getPopularNames()
+
                                     );         
                 }
                 return new JsonResponse(['status' => $translator->trans('success'), 'response' => $lista]);

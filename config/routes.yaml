@@ -25,4 +25,26 @@ popularName_insert:
     controller: App\Controller\PopularNameController::insert
     methods: [POST, HEAD, GET]
 
+popularName_select:
+    path: popularName/select
+    controller: App\Controller\PopularNameController::select
+    methods: [POST, HEAD, GET]
+
+popularName_update:
+    path: popularName/update
+    controller: App\Controller\PopularNameController::update
+    methods: [POST, HEAD, GET]
+
+
+user_insert:
+    path: user/insert
+    controller: App\Controller\UserController::insert
+    methods: [POST, HEAD, GET]
+
+user_validate:
+    path: user/validate
+    controller: App\Controller\UserController::validate
+    methods: [HEAD, GET, POST]
+
+
 

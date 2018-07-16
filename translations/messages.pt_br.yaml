@@ -5,3 +5,4 @@ insert: Registro inserido com sucesso
 delete: Registro removido com sucesso
 update: Registro atualizado com sucesso
 not_found: Registro não encontrado
+empty: não pode ser nulo
