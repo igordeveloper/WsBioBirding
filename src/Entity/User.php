@@ -21,12 +21,12 @@ class User
     private $fullName;
 
     /**
-     * @ORM\Column(type="string", length=150)
+     * @ORM\Column(type="string", length=150, unique=true)
      */
     private $email;
 
     /**
-     * @ORM\Column(type="string", length=12)
+     * @ORM\Column(type="string", length=12, unique=true)
      */
     private $nickname;
 
