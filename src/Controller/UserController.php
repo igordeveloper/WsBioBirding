@@ -55,7 +55,7 @@ class UserController extends Controller
             }else{
                 return new JsonResponse(['status' => $translator->trans('success'), 'response' => true]);
             }
-        }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException  $ex){
+        }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException  | \Doctrine\DBAL\Exception\InvalidArgumentException $ex){
             return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
         }
     }
