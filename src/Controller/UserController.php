@@ -30,7 +30,8 @@ class UserController extends Controller
                         ->setFullName($request->get('full_name'))
                         ->setEmail($request->get('email'))
                         ->setNickName($request->get('nickname'))
-                        ->setPassword(hash('sha256', $request->get('password')));
+                        ->setPassword(hash('sha256', $request->get('password')))
+                        ->setCrBio($request->get('cr_bio'));
 
                 $entityManager->persist($user);
                 $entityManager->flush();

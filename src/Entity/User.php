@@ -31,6 +31,11 @@ class User
     private $nickname;
 
     /**
+     * @ORM\Column(type="string", length=15, unique=true, nullable=true, unique=true)
+     */
+    private $crBio;
+
+    /**
      * @ORM\Column(type="string", length=255)
      */
     private $password;
@@ -38,13 +43,6 @@ class User
     public function getRg(): ?string
     {
         return $this->rg;
-    }
-
-    public function setRg(string $rg): self
-    {
-        $this->rg = $rg;
-
-        return $this;
     }
 
     public function getFullName(): ?string
@@ -83,6 +81,18 @@ class User
         return $this;
     }
 
+    public function getCrBio(): ?string
+    {
+        return $this->crBio;
+    }
+
+    public function setCrBio(?string $crBio): self
+    {
+        $this->crBio = $crBio;
+
+        return $this;
+    }
+
     public function getPassword(): ?string
     {
         return $this->password;
@@ -94,4 +104,5 @@ class User
 
         return $this;
     }
+
 }
