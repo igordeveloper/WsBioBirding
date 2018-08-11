@@ -9,12 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class PopularName
 {
-    /**
-     * @ORM\Id()
-     * @ORM\ManyToOne(targetEntity="App\Entity\Species", inversedBy="popularNames")
-     * @ORM\JoinColumn(nullable=false,referencedColumnName="scientific_name", name="scientific_name")
-     */
-    private $scientific_name;
+
 
     /**
      * @ORM\Id()
@@ -22,16 +17,16 @@ class PopularName
      */
     private $name;
 
-    public function getScientificName(): ?Species
-    {
-        return $this->scientific_name;
-    }
+    /**
+     * @ORM\Id()
+     * @ORM\ManyToOne(targetEntity="App\Entity\Species")
+     * @ORM\JoinColumn(nullable=false, referencedColumnName="scientific_name", name="scientific_name")
+     */
+    private $scientific_name;
 
-    public function setScientificName(?Species $scientific_name): self
+    public function getId()
     {
-        $this->scientific_name = $scientific_name;
-
-        return $this;
+        return $this->id;
     }
 
     public function getName(): ?string
@@ -42,6 +37,18 @@ class PopularName
     public function setName(string $name): self
     {
         $this->name = $name;
+
+        return $this;
+    }
+
+    public function getScientificName(): ?Species
+    {
+        return $this->scientific_name;
+    }
+
+    public function setScientificName(?Species $scientific_name): self
+    {
+        $this->scientific_name = $scientific_name;
 
         return $this;
     }

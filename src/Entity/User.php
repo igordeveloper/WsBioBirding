@@ -40,16 +40,17 @@ class User
      */
     private $password;
 
+
+    /**
+     * @ORM\Id()
+     * @ORM\ManyToOne(targetEntity="App\Entity\AccessLevel")
+     * @ORM\JoinColumn(nullable=false, referencedColumnName="access_level", name="access_level")
+     */
+    private $access_level;
+
     public function getRg(): ?string
     {
         return $this->rg;
-    }
-
-    public function setRg(string $rg): self
-    {
-        $this->rg = $rg;
-
-        return $this;
     }
 
     public function getFullName(): ?string
@@ -111,4 +112,18 @@ class User
 
         return $this;
     }
+
+    public function getAccessLevel(): ?AccessLevel
+    {
+        return $this->access_level;
+    }
+
+    public function setAccessLevel(?AccessLevel $access_level): self
+    {
+        $this->access_level = $access_level;
+
+        return $this;
+    }
+
+
 }

@@ -4,13 +4,13 @@ namespace App\Controller;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
-use Symfony\Bundle\FrameworkBundle\Controller\Controller;
+use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Species;
 use App\Utils\Autenticar;
 use Symfony\Component\Translation\TranslatorInterface;
 
 
-class SpeciesController extends Controller
+class SpeciesController extends AbstractController
 {
 
     public function insert(Request $request, Autenticar $autenticar, TranslatorInterface $translator)
