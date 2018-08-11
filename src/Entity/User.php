@@ -40,9 +40,7 @@ class User
      */
     private $password;
 
-
     /**
-     * @ORM\Id()
      * @ORM\ManyToOne(targetEntity="App\Entity\AccessLevel")
      * @ORM\JoinColumn(nullable=false, referencedColumnName="access_level", name="access_level")
      */
