@@ -31,7 +31,8 @@ class UserController extends Controller
                         ->setEmail($request->get('email'))
                         ->setNickName($request->get('nickname'))
                         ->setPassword(hash('sha256', $request->get('password')))
-                        ->setCrBio($request->get('cr_bio'));
+                        ->setCrBio($request->get('cr_bio'))
+                        ->setAccessLevel($request->get('access_level'));
 
                 $entityManager->persist($user);
                 $entityManager->flush();
@@ -54,7 +55,14 @@ class UserController extends Controller
             if(!$user){
                 throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
             }else{
-                return new JsonResponse(['status' => $translator->trans('success'), 'response' => true]);
+
+                $userInfo = [];
+                $userInfo["fullName"] = $user->getFullName();
+                $userInfo["emal"] = $user->getEmail();
+                $userInfo["nickname"] = $user->getNickName();
+                $userInfo["accessLevel"] = $user->getAccessLevel()->getAccessLevel();
+
+                return new JsonResponse(['status' => $translator->trans('success'), 'response' => true, 'userInfo'=>$userInfo]);
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException  | \Doctrine\DBAL\Exception\InvalidArgumentException $ex){
             return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
