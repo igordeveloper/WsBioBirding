@@ -6,27 +6,27 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Species;
-use App\Utils\Autenticar;
+use App\Helper\AutenticateHelper;
 use Symfony\Component\Translation\TranslatorInterface;
 
 
 class SpeciesController extends AbstractController
 {
 
-    public function insert(Request $request, Autenticar $autenticar, TranslatorInterface $translator)
+    public function insert(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
-            if($autenticar->token($request->headers->get('token'))){
+            if($autenticate->token($request->headers->get('token'))){
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = new Species();
                 $species->setScientificName($request->get('scientific_name'));
                 $species->setCharacteristics($request->get('characteristics'));
                 $entityManager->persist($species);
                 $entityManager->flush();
-                return new JsonResponse(['status' => $translator->trans('success'), 'response' => $translator->trans('insert')]);
+                return new JsonResponse(['authorized' => true, 'response' => $translator->trans('insert')]);
             }else{
-                return new JsonResponse(['status' => $translator->trans('error'), 'response' => $translator->trans('insert')]); 
+                return new JsonResponse(['authorized' => false, 'response' => $translator->trans('insert')]); 
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException  $ex){
             return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
@@ -34,11 +34,11 @@ class SpeciesController extends AbstractController
     }
 
 
-    public function select(Request $request, Autenticar $autenticar, TranslatorInterface $translator)
+    public function select(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
-            if($autenticar->token($request->headers->get('token'))){
+            if($autenticate->verify($request->headers->get('nickname'), $request->headers->get('password'))){
                 $species = $this->getDoctrine()->getRepository(Species::class)->findAll();
                 $lista = array();
 
@@ -46,8 +46,6 @@ class SpeciesController extends AbstractController
 
                 foreach ($species as $specie) {
 
-echo "<pre>";
-  \Doctrine\Common\Util\Debug::dump($specie->getPopularNames());
 
                     $lista[] = array(
                                     'scientific_name' => $specie->getScientificName(), 
@@ -56,7 +54,9 @@ echo "<pre>";
 
                                     );         
                 }
-                return new JsonResponse(['status' => $translator->trans('success'), 'response' => $lista]);
+                return new JsonResponse(['authorized' => true , 'species' => $lista]);
+            }else{
+                return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
             }
         }catch(\TypeError $ex){
             return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
@@ -64,11 +64,11 @@ echo "<pre>";
     }
 
 
-    public function update(Request $request, Autenticar $autenticar, TranslatorInterface $translator)
+    public function update(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
-            if($autenticar->token($request->headers->get('token'))){
+            if($autenticate->token($request->headers->get('token'))){
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = $entityManager->getRepository(Species::class)->find($request->get('scientific_name'));
 
@@ -87,11 +87,11 @@ echo "<pre>";
     }
 
 
-    public function delete(Request $request, Autenticar $autenticar, TranslatorInterface $translator)
+    public function delete(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
-            if($autenticar->token($request->headers->get('token'))){
+            if($autenticate->token($request->headers->get('token'))){
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = $entityManager->getRepository(Species::class)->find($request->get('scientific_name'));
                 if(!$species) {

@@ -6,3 +6,4 @@ delete: Registro removido com sucesso
 update: Registro atualizado com sucesso
 not_found: Registro não encontrado
 empty: não pode ser nulo
+not_authorized: não autorizado

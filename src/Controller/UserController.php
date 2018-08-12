@@ -5,7 +5,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use App\Utils\Autenticar;
+use App\Helper\AutenticateHelper;
 use App\Entity\User;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
@@ -14,11 +14,11 @@ use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 class UserController extends Controller
 {
 
-    public function insert(Request $request, Autenticar $autenticar, TranslatorInterface $translator)
+    public function insert(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
-            if($autenticar->token($request->headers->get('token'))){
+            if($autenticate->token($request->headers->get('token'))){
 
                 if( empty($request->get('password')) || $request->get('password') == NULL) {
                     throw new \TypeError("parameter [password]: " . $translator->trans('empty'));

@@ -5,7 +5,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
-use App\Utils\Autenticar;
+use App\Helper\AutenticateHelper;
 use App\Entity\PopularName;
 use App\Entity\Species;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -14,11 +14,11 @@ use Symfony\Component\Translation\TranslatorInterface;
 class PopularNameController extends Controller
 {
 
-    public function insert(Request $request, Autenticar $autenticar, TranslatorInterface $translator)
+    public function insert(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
-            if($autenticar->token($request->headers->get('token'))){
+            if($autenticate->token($request->headers->get('token'))){
 
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = $entityManager->getRepository(Species::class)->find($request->get('scientific_name'));
@@ -41,11 +41,11 @@ class PopularNameController extends Controller
     }
 
 
-    public function select(Request $request, Autenticar $autenticar, TranslatorInterface $translator)
+    public function select(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
-            if($autenticar->token($request->headers->get('token'))){
+            if($autenticate->token($request->headers->get('token'))){
                 $popularName = $this->getDoctrine()->getRepository(PopularName::class)->findBy(['name' => "%".$request->get('name')."%"]);
 
 
@@ -64,11 +64,11 @@ class PopularNameController extends Controller
     }
 
 
-    public function update(Request $request, Autenticar $autenticar, TranslatorInterface $translator)
+    public function update(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
-            if($autenticar->token($request->headers->get('token'))){
+            if($autenticate->token($request->headers->get('token'))){
                 $entityManager = $this->getDoctrine()->getManager();
                 $popularName = $entityManager->getRepository(PopularName::class)
                                 ->findOneBy([
@@ -90,11 +90,11 @@ class PopularNameController extends Controller
     }
 
 
-    public function delete(Request $request, Autenticar $autenticar, TranslatorInterface $translator)
+    public function delete(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
-            if($autenticar->token($request->headers->get('token'))){
+            if($autenticate->token($request->headers->get('token'))){
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = $entityManager->getRepository(Species::class)->find($request->get('scientific_name'));
                 if(!$species) {

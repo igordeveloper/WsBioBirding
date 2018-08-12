@@ -51,6 +51,13 @@ class User
         return $this->rg;
     }
 
+    public function setRg(string $rg): self
+    {
+        $this->rg = $rg;
+
+        return $this;
+    }
+
     public function getFullName(): ?string
     {
         return $this->fullName;
