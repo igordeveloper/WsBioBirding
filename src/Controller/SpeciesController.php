@@ -17,7 +17,7 @@ class SpeciesController extends AbstractController
     {
 
         try{
-            if($autenticate->token($request->headers->get('token'))){
+            if($autenticate->verify($request->headers->get('nickname'), $request->headers->get('password'))){
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = new Species();
                 $species->setScientificName($request->get('scientific_name'));
