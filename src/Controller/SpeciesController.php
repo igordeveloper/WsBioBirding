@@ -50,8 +50,6 @@ class SpeciesController extends AbstractController
                     $lista[] = array(
                                     'scientific_name' => $specie->getScientificName(), 
                                     'characteristics' => $specie->getCharacteristics(),
-                                    'names' =>$specie->getPopularNames()
-
                                     );         
                 }
                 return new JsonResponse(['authorized' => true , 'species' => $lista]);
