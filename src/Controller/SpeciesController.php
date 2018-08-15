@@ -26,7 +26,7 @@ class SpeciesController extends AbstractController
                 $entityManager->flush();
                 return new JsonResponse(['authorized' => true, 'response' => $translator->trans('insert')]);
             }else{
-                return new JsonResponse(['authorized' => false); 
+                return new JsonResponse(['authorized' => false]); 
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException  $ex){
             return new JsonResponse(['exception' => $translator->trans('error'), 'response' => $ex->getmessage()]);
