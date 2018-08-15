@@ -39,6 +39,33 @@ class SpeciesController extends AbstractController
 
         try{
             if($autenticate->verify($request->headers->get('nickname'), $request->headers->get('password'))){
+                $species = $this->getDoctrine()->getRepository(Species::class)->findByScientificName($request->get('scientific_name'));
+                $lista = array();
+
+
+                foreach ($species as $specie) {
+
+
+                    $lista[] = array(
+                                    'scientific_name' => $specie->getScientificName(), 
+                                    'characteristics' => $specie->getCharacteristics()
+                                    );         
+                }
+                return new JsonResponse(['authorized' => true , 'species' => $lista]);
+            }else{
+                return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
+            }
+        }catch(\TypeError $ex){
+            return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
+        }
+    }
+
+
+    public function selectAll(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    {
+
+        try{
+            if($autenticate->verify($request->headers->get('nickname'), $request->headers->get('password'))){
                 $species = $this->getDoctrine()->getRepository(Species::class)->findAll();
                 $lista = array();
 
@@ -49,7 +76,7 @@ class SpeciesController extends AbstractController
 
                     $lista[] = array(
                                     'scientific_name' => $specie->getScientificName(), 
-                                    'characteristics' => $specie->getCharacteristics(),
+                                    'characteristics' => $specie->getCharacteristics()
                                     );         
                 }
                 return new JsonResponse(['authorized' => true , 'species' => $lista]);
