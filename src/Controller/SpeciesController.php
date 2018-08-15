@@ -29,7 +29,7 @@ class SpeciesController extends AbstractController
                 return new JsonResponse(['authorized' => false]); 
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException  $ex){
-            return new JsonResponse(['exception' => $translator->trans('error'), 'response' => $ex->getmessage()]);
+            return new JsonResponse(['exception' => $ex->getmessage()]);
         }
     }
 
