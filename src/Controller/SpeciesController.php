@@ -105,7 +105,7 @@ class SpeciesController extends AbstractController
 
                 }
             }
-        }catch(\TypeError | \Doctrine\DBAL\Exception\InvalidArgumentException | \Doctrine\ORM\ORMException $ex){
+        }catch(\TypeError |  \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\DBAL\Exception\InvalidArgumentException | \Doctrine\ORM\ORMException $ex){
             return new JsonResponse(['exception' => $ex->getmessage()]);
         }
     }
