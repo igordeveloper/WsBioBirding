@@ -3,14 +3,14 @@ species_insert:
     controller: App\Controller\SpeciesController::insert
     methods: [POST, HEAD, GET]
 
-species_selectAll:
-    path: species/selectAll
-    controller: App\Controller\SpeciesController::selectAll
-    methods: [POST, HEAD, GET]
-
 species_select:
     path: species/select
     controller: App\Controller\SpeciesController::select
+    methods: [POST, HEAD, GET]
+
+species_search:
+    path: species/search
+    controller: App\Controller\SpeciesController::search
     methods: [POST, HEAD, GET]
 
 species_update:

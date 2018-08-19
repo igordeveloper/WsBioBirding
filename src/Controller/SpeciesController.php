@@ -34,7 +34,7 @@ class SpeciesController extends AbstractController
     }
 
 
-    public function select(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    public function search(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
@@ -61,24 +61,22 @@ class SpeciesController extends AbstractController
     }
 
 
-    public function selectAll(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    public function select(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
             if($autenticate->verify($request->headers->get('nickname'), $request->headers->get('password'))){
-                $species = $this->getDoctrine()->getRepository(Species::class)->findAll();
-                $lista = array();
-
-
-
-                foreach ($species as $specie) {
-
-
-                    $lista[] = array(
-                                    'scientific_name' => $specie->getScientificName(), 
-                                    'characteristics' => $specie->getCharacteristics()
-                                    );         
+                $species = $this->getDoctrine()->getRepository(Species::class)->find($request->get('scientific_name'));
+                
+                if($species){
+                    $lista = array(
+                            'scientific_name' => $species->getScientificName(), 
+                            'characteristics' => $species->getCharacteristics()
+                            );  
+                }else{
+                    $lista = NULL;
                 }
+
                 return new JsonResponse(['authorized' => true , 'species' => $lista]);
             }else{
                 return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 

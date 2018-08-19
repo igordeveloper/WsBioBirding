@@ -35,7 +35,6 @@ class SpeciesRepository extends ServiceEntityRepository
         ;
     }
     
-
     /*
     public function findOneBySomeField($value): ?Species
     {
