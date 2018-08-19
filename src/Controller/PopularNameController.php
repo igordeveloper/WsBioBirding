@@ -18,7 +18,7 @@ class PopularNameController extends Controller
     {
 
         try{
-            if($autenticate->token($request->headers->get('token'))){
+            if($autenticate->verify($request->headers->get('nickname'), $request->headers->get('password'))){
 
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = $entityManager->getRepository(Species::class)->find($request->get('scientific_name'));
@@ -31,12 +31,12 @@ class PopularNameController extends Controller
                 $entityManager->persist($popularName);
 
                 $entityManager->flush();
-                return new JsonResponse(['status' => $translator->trans('success'), 'response' => $translator->trans('insert')]);
+                return new JsonResponse(['authorized' => true, 'response' => $translator->trans('insert')]);
             }else{
-                return new JsonResponse(['status' => $translator->trans('error'), 'response' => $translator->trans('insert')]); 
+                return new JsonResponse(['authorized' => false]); 
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException |  \Doctrine\ORM\ORMException $ex){
-            return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
+            return new JsonResponse(['exception' => $ex->getmessage()]);
         }
     }
 
@@ -59,7 +59,7 @@ class PopularNameController extends Controller
                 return new JsonResponse(['status' => $translator->trans('success'), 'response' => $lista]);
             }
         }catch(\TypeError $ex){
-            return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
+            return new JsonResponse(['exception' => $ex->getmessage()]);
         }
     }
 
@@ -85,7 +85,7 @@ class PopularNameController extends Controller
                 }
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\InvalidArgumentException | \Doctrine\ORM\ORMException $ex){
-            return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
+            return new JsonResponse(['exception' => $ex->getmessage()]);
         }
     }
 
@@ -106,7 +106,7 @@ class PopularNameController extends Controller
                 }
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\InvalidArgumentException | \Doctrine\ORM\ORMException $ex){
-            return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
+            return new JsonResponse(['exception' => $ex->getmessage()]);
         }
     }
 

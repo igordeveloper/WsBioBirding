@@ -110,24 +110,4 @@ class SpeciesController extends AbstractController
         }
     }
 
-
-    public function delete(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
-    {
-
-        try{
-            if($autenticate->token($request->headers->get('token'))){
-                $entityManager = $this->getDoctrine()->getManager();
-                $species = $entityManager->getRepository(Species::class)->find($request->get('scientific_name'));
-                if(!$species) {
-                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
-                }else{
-                    $entityManager->remove($species);
-                    $entityManager->flush();
-                    return new JsonResponse(['status' => $translator->trans('success'), 'response' => $translator->trans('delete')]);
-                }
-            }
-        }catch(\TypeError | \Doctrine\DBAL\Exception\InvalidArgumentException | \Doctrine\ORM\ORMException $ex){
-            return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
-        }
-    }
 }
