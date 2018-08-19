@@ -56,7 +56,7 @@ class SpeciesController extends AbstractController
                 return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
             }
         }catch(\TypeError $ex){
-            return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
+            return new JsonResponse(['exception' => $ex->getmessage()]);
         }
     }
 
@@ -82,7 +82,7 @@ class SpeciesController extends AbstractController
                 return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
             }
         }catch(\TypeError $ex){
-            return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
+            return new JsonResponse(['exception' => $ex->getmessage()]);
         }
     }
 
@@ -101,11 +101,12 @@ class SpeciesController extends AbstractController
                     $species->setScientificName($request->get('new_scientific_name'));
                     $species->setCharacteristics($request->get('characteristics'));
                     $entityManager->flush();
-                    return new JsonResponse(['status' => $translator->trans('success'), 'response' => $translator->trans('update')]);
+                  return new JsonResponse(['authorized' => true, 'response' => $translator->trans('update')]);
+
                 }
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\InvalidArgumentException | \Doctrine\ORM\ORMException $ex){
-            return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
+            return new JsonResponse(['exception' => $ex->getmessage()]);
         }
     }
 
