@@ -18,9 +18,16 @@ species_update:
     controller: App\Controller\SpeciesController::update
     methods: [POST, HEAD, GET]
 
+
+
 popularName_insert:
     path: popularName/insert
     controller: App\Controller\PopularNameController::insert
+    methods: [POST, HEAD, GET]
+
+popularName_selectAll:
+    path: popularName/selectAll
+    controller: App\Controller\PopularNameController::selectAll
     methods: [POST, HEAD, GET]
 
 popularName_select:
@@ -42,6 +49,11 @@ user_insert:
 user_validate:
     path: user/validate
     controller: App\Controller\UserController::validate
+    methods: [HEAD, GET, POST]
+
+user_update_status:
+    path: user/updateStatus
+    controller: App\Controller\UserController::updateStatus
     methods: [HEAD, GET, POST]
 
 

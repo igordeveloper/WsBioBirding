@@ -46,6 +46,12 @@ class User
      */
     private $access_level;
 
+    /**
+     * @ORM\Column(type="boolean", options={"default" : 1})
+     */
+    private $status;
+
+
     public function getRg(): ?string
     {
         return $this->rg;
@@ -126,6 +132,18 @@ class User
     public function setAccessLevel(?AccessLevel $access_level): self
     {
         $this->access_level = $access_level;
+
+        return $this;
+    }
+
+    public function getStatus(): ?bool
+    {
+        return $this->status;
+    }
+
+    public function setStatus(bool $status): self
+    {
+        $this->status = $status;
 
         return $this;
     }

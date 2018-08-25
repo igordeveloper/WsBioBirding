@@ -21,7 +21,7 @@ class UserRepository extends ServiceEntityRepository
 
 
     /**
-     * @return User[] Returns an array of User objects
+     * @return User Returns a User object
      */
     public function findByEmailOrNickName(string $value, string $password)
     {
@@ -33,4 +33,22 @@ class UserRepository extends ServiceEntityRepository
             ->getQuery()
             ->getOneOrNullResult();
     }
+
+
+    /**
+     * @return User Returns a User object
+     */
+    public function findByRg(string $rg)
+    {
+        return $this->createQueryBuilder('u')
+            ->where('u.rg = :rg')
+            ->setParameter('rg', $rg)
+            ->getQuery()
+            ->getOneOrNullResult();
+    }
+
+
+
+
+    
 }

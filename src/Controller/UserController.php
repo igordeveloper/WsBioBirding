@@ -18,7 +18,7 @@ class UserController extends Controller
     {
 
         try{
-            if($autenticate->token($request->headers->get('token'))){
+            if($autenticate->verify($request->headers->get('nickname'), $request->headers->get('password'))){
 
                 if( empty($request->get('password')) || $request->get('password') == NULL) {
                     throw new \TypeError("parameter [password]: " . $translator->trans('empty'));
@@ -31,17 +31,17 @@ class UserController extends Controller
                         ->setEmail($request->get('email'))
                         ->setNickName($request->get('nickname'))
                         ->setPassword(hash('sha256', $request->get('password')))
-                        ->setCrBio($request->get('cr_bio'))
-                        ->setAccessLevel($request->get('access_level'));
+                        ->setCrBio($request->get('crBio'))
+                        ->setAccessLevel($request->get('accessLevel'));
 
                 $entityManager->persist($user);
                 $entityManager->flush();
-                return new JsonResponse(['status' => $translator->trans('success'), 'response' => $translator->trans('insert')]);
+                return new JsonResponse(['authorized' => true, 'response' => $translator->trans('insert')]);
             }else{
-                return new JsonResponse(['status' => $translator->trans('error'), 'response' => $translator->trans('insert')]); 
+                return new JsonResponse(['authorized' => false]); 
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException  $ex){
-            return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
+            return new JsonResponse(['exception' => $ex->getmessage()]);
         }
     }
 
@@ -61,11 +61,41 @@ class UserController extends Controller
                 $userInfo["emal"] = $user->getEmail();
                 $userInfo["nickname"] = $user->getNickName();
                 $userInfo["accessLevel"] = $user->getAccessLevel()->getAccessLevel();
-
-                return new JsonResponse(['status' => $translator->trans('success'), 'response' => true, 'userInfo'=>$userInfo]);
+                $userInfo["rg"] = $user->getRg();
+                return new JsonResponse(['authorized' => true, 'userInfo'=>$userInfo]);
             }
-        }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException  | \Doctrine\DBAL\Exception\InvalidArgumentException $ex){
-            return new JsonResponse(['status' => $translator->trans('error'), 'response' => $ex->getmessage()]);
+        }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex){
+            return new JsonResponse(['exception' => $ex->getmessage()]);
         }
     }
+
+
+    public function updateStatus(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    {
+
+        try{
+            if($autenticate->verify($request->headers->get('nickname'), $request->headers->get('password'))){
+
+                $user = $this->getDoctrine()->getRepository(User::class)->findByRg($request->get('rg'));
+
+                if(!$user){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
+                }else{
+
+                    $entityManager = $this->getDoctrine()->getManager();
+                    $user->setStatus($request->get('status'));
+                    $entityManager->flush();
+                    
+                    return new JsonResponse(['authorized' => true, 'response' => $translator->trans('update')]);
+
+                }
+
+                return new JsonResponse(['authorized' => false]); 
+            }
+        }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException  $ex){
+            return new JsonResponse(['exception' => $ex->getmessage()]);
+        }
+
+    }
+
 }
