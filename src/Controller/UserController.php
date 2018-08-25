@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Helper\AutenticateHelper;
 use App\Entity\User;
+use App\Entity\AccessLevel;
 use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
@@ -25,6 +26,8 @@ class UserController extends Controller
                 }
 
                 $entityManager = $this->getDoctrine()->getManager();
+                $accessLevel = $entityManager->getRepository(AccessLevel::class)->find($request->get('accessLevel'));
+
                 $user = new User();
                 $user->setRg($request->get('rg'))
                         ->setFullName($request->get('full_name'))
@@ -32,7 +35,8 @@ class UserController extends Controller
                         ->setNickName($request->get('nickname'))
                         ->setPassword(hash('sha256', $request->get('password')))
                         ->setCrBio($request->get('crBio'))
-                        ->setAccessLevel($request->get('accessLevel'));
+                        ->setAccessLevel($accessLevel)
+                        ->setEnabled(true);
 
                 $entityManager->persist($user);
                 $entityManager->flush();
