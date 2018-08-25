@@ -138,12 +138,12 @@ class User
 
     public function getEnabled(): ?bool
     {
-        return $this->status;
+        return $this->enabled;
     }
 
-    public function setEnabled(bool $status): self
+    public function setEnabled(bool $enabled): self
     {
-        $this->status = $status;
+        $this->enabled = $enabled;
 
         return $this;
     }
