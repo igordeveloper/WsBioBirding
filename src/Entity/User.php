@@ -49,7 +49,7 @@ class User
     /**
      * @ORM\Column(type="boolean", options={"default" : 1})
      */
-    private $status;
+    private $enabled;
 
 
     public function getRg(): ?string
@@ -136,12 +136,12 @@ class User
         return $this;
     }
 
-    public function getStatus(): ?bool
+    public function getEnabled(): ?bool
     {
         return $this->status;
     }
 
-    public function setStatus(bool $status): self
+    public function setEnabled(bool $status): self
     {
         $this->status = $status;
 
