@@ -14,7 +14,7 @@ class AccessLevel
      * @ORM\GeneratedValue()
      * @ORM\Column(type="integer")
      */
-    private $access_level;
+    private $accessLevel;
 
     /**
      * @ORM\Column(type="string", length=25)
@@ -23,7 +23,7 @@ class AccessLevel
 
     public function getAccessLevel(): ?int
     {
-        return $this->access_level;
+        return $this->accessLevel;
     }
 
     public function getDescription(): ?string
