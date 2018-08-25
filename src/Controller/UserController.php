@@ -64,7 +64,7 @@ class UserController extends Controller
                 $userInfo["rg"] = $user->getRg();
                 return new JsonResponse(['authorized' => true, 'userInfo'=>$userInfo]);
             }
-        }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex){
+        }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\DBAL\Exception\InvalidArgumentException$ex){
             return new JsonResponse(['exception' => $ex->getmessage()]);
         }
     }
@@ -92,7 +92,7 @@ class UserController extends Controller
 
                 return new JsonResponse(['authorized' => false]); 
             }
-        }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException  $ex){
+        }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\DBAL\Exception\InvalidArgumentException$ex){
             return new JsonResponse(['exception' => $ex->getmessage()]);
         }
 
