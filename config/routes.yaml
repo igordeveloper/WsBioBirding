@@ -40,6 +40,11 @@ popularName_update:
     controller: App\Controller\PopularNameController::update
     methods: [POST, HEAD, GET]
 
+popularName_delete:
+    path: popularName/delete
+    controller: App\Controller\PopularNameController::delete
+    methods: [POST, HEAD, GET]
+
 
 user_insert:
     path: user/insert
