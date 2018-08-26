@@ -37,6 +37,9 @@ class SpeciesController extends AbstractController
     public function search(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
+
+        var_dump($request->headers->get('authorization'));
+
         try{
             if($autenticate->verify($request->headers->get('authorization'))){
                 $species = $this->getDoctrine()->getRepository(Species::class)->findByScientificName($request->get('scientific_name'));
