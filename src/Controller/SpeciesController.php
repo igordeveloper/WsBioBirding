@@ -100,7 +100,7 @@ class SpeciesController extends AbstractController
                     throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
                 }else{
                     $species->setScientificName($request->get('new_scientific_name'));
-                    $species->getNotes($request->get('notes'));
+                    $species->setNotes($request->get('notes'));
                     $entityManager->flush();
                   return new JsonResponse(['authorized' => true, 'response' => $translator->trans('update')]);
 
