@@ -38,7 +38,7 @@ class SpeciesController extends AbstractController
     {
 
 
-        var_dump($request->headers->get('phpteste'));
+        var_dump($request->headers->get('authorization'));
 
         try{
             if($autenticate->verify($request->headers->get('authorization'))){
