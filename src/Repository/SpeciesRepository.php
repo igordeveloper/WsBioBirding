@@ -19,31 +19,16 @@ class SpeciesRepository extends ServiceEntityRepository
         parent::__construct($registry, Species::class);
     }
 
-    /**
-    * @return Species[] Returns an array of Species objects
-    */
-    
     public function findByScientificName(string $value)
     {
         return $this->createQueryBuilder('s')
-            ->andWhere('s.scientific_name like :scientificName')
+            ->andWhere('s.scientificName like :scientificName')
             ->setParameter('scientificName', '%'. $value . '%')
-            ->orderBy('s.scientific_name', 'ASC')
+            ->orderBy('s.scientificName', 'ASC')
             ->setMaxResults(20)
             ->getQuery()
             ->getResult()
         ;
     }
-    
-    /*
-    public function findOneBySomeField($value): ?Species
-    {
-        return $this->createQueryBuilder('s')
-            ->andWhere('s.exampleField = :val')
-            ->setParameter('val', $value)
-            ->getQuery()
-            ->getOneOrNullResult()
-        ;
-    }
-    */
+
 }

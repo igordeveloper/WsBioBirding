@@ -14,7 +14,7 @@ class Species
      * @ORM\Id()
      * @ORM\Column(type="string", length=120)
      */
-    private $scientific_name;
+    private $scientificName;
 
     /**
      * @ORM\Column(type="text")
@@ -23,12 +23,12 @@ class Species
 
     public function getScientificName(): ?string
     {
-        return $this->scientific_name;
+        return $this->scientificName;
     }
 
-    public function setScientificName(string $scientific_name): self
+    public function setScientificName(string $scientificName): self
     {
-        $this->scientific_name = $scientific_name;
+        $this->scientificName = $scientificName;
 
         return $this;
     }
