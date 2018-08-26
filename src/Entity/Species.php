@@ -31,6 +31,13 @@ class Species
         return $this->scientificName;
     }
 
+    public function setScientificName(string $scientificName): self
+    {
+        $this->scientificName = $scientificName;
+
+        return $this;
+    }
+
     public function getNotes(): ?string
     {
         return $this->notes;
@@ -54,6 +61,8 @@ class Species
 
         return $this;
     }
+
+
 
 
 
