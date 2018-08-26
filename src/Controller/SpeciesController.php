@@ -21,7 +21,7 @@ class SpeciesController extends AbstractController
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = new Species();
                 $species->setScientificName($request->get('scientific_name'));
-                $species->setCharacteristics($request->get('characteristics'));
+                $species->getNotes($request->get('notes'));
                 $entityManager->persist($species);
                 $entityManager->flush();
                 return new JsonResponse(['authorized' => true, 'response' => $translator->trans('insert')]);
@@ -48,7 +48,7 @@ class SpeciesController extends AbstractController
 
                     $lista[] = array(
                                     'scientific_name' => $specie->getScientificName(), 
-                                    'characteristics' => $specie->getCharacteristics()
+                                    'notes' => $specie->getNotes()
                                     );         
                 }
                 return new JsonResponse(['authorized' => true , 'species' => $lista]);
@@ -71,7 +71,8 @@ class SpeciesController extends AbstractController
                 if($species){
                     $lista = array(
                             'scientific_name' => $species->getScientificName(), 
-                            'characteristics' => $species->getCharacteristics()
+                            'notes' => $species->getNotes(),
+                            'conservationState' => $species->getConservationState(),
                             );  
                 }else{
                     $lista = NULL;
@@ -99,7 +100,7 @@ class SpeciesController extends AbstractController
                     throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
                 }else{
                     $species->setScientificName($request->get('new_scientific_name'));
-                    $species->setCharacteristics($request->get('characteristics'));
+                    $species->getNotes($request->get('notes'));
                     $entityManager->flush();
                   return new JsonResponse(['authorized' => true, 'response' => $translator->trans('update')]);
 

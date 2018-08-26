@@ -19,29 +19,42 @@ class Species
     /**
      * @ORM\Column(type="text")
      */
-    private $characteristics;
+    private $notes;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable = true)
+     */
+    private $conservationState;
 
     public function getScientificName(): ?string
     {
         return $this->scientificName;
     }
 
-    public function setScientificName(string $scientificName): self
+    public function getNotes(): ?string
     {
-        $this->scientificName = $scientificName;
+        return $this->notes;
+    }
+
+    public function setNotes(string $notes): self
+    {
+        $this->notes = $notes;
 
         return $this;
     }
 
-    public function getCharacteristics(): ?string
+    public function getConservationState(): ?string
     {
-        return $this->characteristics;
+        return $this->conservationState;
     }
 
-    public function setCharacteristics(string $characteristics): self
+    public function setConservationState(?string $conservationState): self
     {
-        $this->characteristics = $characteristics;
+        $this->conservationState = $conservationState;
 
         return $this;
     }
+
+
+
 }
