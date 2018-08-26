@@ -18,10 +18,13 @@ class AutenticateHelper
         $this->em = $em;
     }
 
-    public function verify(string $nickname, string $password): bool
+    public function verify(string $authorization): bool
     {
 
-        $user = $this->em->getRepository(User::class)->findByEmailOrNickName($nickname, $password);
+        $authorization = base64_decode($authorization);
+        $temporary = explode("||", $authorization);
+
+        $user = $this->em->getRepository(User::class)->findByEmailOrNickName($temporary[0], $temporary[1]);
          if($user){
             return true;
          }else{

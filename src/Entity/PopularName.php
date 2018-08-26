@@ -22,7 +22,7 @@ class PopularName
      * @ORM\ManyToOne(targetEntity="App\Entity\Species")
      * @ORM\JoinColumn(nullable=false, referencedColumnName="scientific_name", name="scientific_name")
      */
-    private $scientific_name;
+    private $scientificName;
 
     public function getId()
     {
@@ -43,12 +43,12 @@ class PopularName
 
     public function getScientificName(): ?Species
     {
-        return $this->scientific_name;
+        return $this->scientificName;
     }
 
-    public function setScientificName(?Species $scientific_name): self
+    public function setScientificName(?Species $scientificName): self
     {
-        $this->scientific_name = $scientific_name;
+        $this->scientificName = $scientificName;
 
         return $this;
     }

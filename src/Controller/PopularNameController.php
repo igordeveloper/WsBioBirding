@@ -41,11 +41,34 @@ class PopularNameController extends Controller
     }
 
 
+    public function selectAll(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    {
+
+        try{
+            if($autenticate->verify($request->headers->get('nickname'), $request->headers->get('password'))){
+                $popularName = $this->getDoctrine()->getRepository(PopularName::class)->findBy(['scientificName' => $request->get('name')]);
+
+
+                $lista = array();
+                foreach ($popularName as $name) {
+                    $lista[] = array(
+                                    'scientific_name' => $name->getScientificName()->getScientificName(), 
+                                    'name' => $name->getName()
+                                    );         
+                }
+                return new JsonResponse(['status' => $translator->trans('success'), 'response' => $lista]);
+            }
+        }catch(\TypeError $ex){
+            return new JsonResponse(['exception' => $ex->getmessage()]);
+        }
+    }
+
+
     public function select(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
-            if($autenticate->token($request->headers->get('token'))){
+            if($autenticate->verify($request->headers->get('nickname'), $request->headers->get('password'))){
                 $popularName = $this->getDoctrine()->getRepository(PopularName::class)->findBy(['name' => "%".$request->get('name')."%"]);
 
 
