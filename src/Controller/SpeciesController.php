@@ -20,7 +20,7 @@ class SpeciesController extends AbstractController
             if($autenticate->verify($request->headers->get('authorizationCode'))){
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = new Species();
-                $species->setScientificName($request->get('scientific_name'));
+                $species->setScientificName($request->get('scientificName'));
                 $species->setNotes($request->get('notes'));
                 $species->setConservationState($request->get('conservationState'));
                 $entityManager->persist($species);
@@ -40,7 +40,7 @@ class SpeciesController extends AbstractController
 
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
-                $species = $this->getDoctrine()->getRepository(Species::class)->findByScientificName($request->get('scientific_name'));
+                $species = $this->getDoctrine()->getRepository(Species::class)->findByScientificName($request->get('scientificName'));
                 $lista = array();
 
 
@@ -48,7 +48,7 @@ class SpeciesController extends AbstractController
 
 
                     $lista[] = array(
-                                    'scientific_name' => $specie->getScientificName(), 
+                                    'scientificName' => $specie->getScientificName(), 
                                     'notes' => $specie->getNotes()
                                     );         
                 }
@@ -67,11 +67,11 @@ class SpeciesController extends AbstractController
 
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
-                $species = $this->getDoctrine()->getRepository(Species::class)->find($request->get('scientific_name'));
+                $species = $this->getDoctrine()->getRepository(Species::class)->find($request->get('scientificName'));
                 
                 if($species){
                     $lista = array(
-                            'scientific_name' => $species->getScientificName(), 
+                            'scientificName' => $species->getScientificName(), 
                             'notes' => $species->getNotes(),
                             'conservationState' => $species->getConservationState(),
                             );  
@@ -95,12 +95,12 @@ class SpeciesController extends AbstractController
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
                 $entityManager = $this->getDoctrine()->getManager();
-                $species = $entityManager->getRepository(Species::class)->find($request->get('scientific_name'));
+                $species = $entityManager->getRepository(Species::class)->find($request->get('scientificName'));
 
                 if(!$species) {
                     throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
                 }else{
-                    $species->setScientificName($request->get('new_scientific_name'));
+                    $species->setScientificName($request->get('newScientificName'));
                     $species->setNotes($request->get('notes'));
                     $species->setConservationState($request->get('conservationState'));
                     $entityManager->flush();
