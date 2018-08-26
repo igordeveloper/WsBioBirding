@@ -19,7 +19,7 @@ class UserController extends Controller
     {
 
         try{
-            if($autenticate->verify($request->headers->get('nickname'), $request->headers->get('password'))){
+            if($autenticate->verify($request->headers->get('authorization'))){
 
                 if( empty($request->get('password')) || $request->get('password') == NULL) {
                     throw new \TypeError("parameter [password]: " . $translator->trans('empty'));
@@ -78,7 +78,7 @@ class UserController extends Controller
     {
 
         try{
-            if($autenticate->verify($request->headers->get('nickname'), $request->headers->get('password'))){
+            if($autenticate->verify($request->headers->get('authorization'))){
 
                 $user = $this->getDoctrine()->getRepository(User::class)->findByRg($request->get('rg'));
 
