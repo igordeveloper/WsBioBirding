@@ -17,7 +17,7 @@ class Species
     private $scientificName;
 
     /**
-     * @ORM\Column(type="text")
+     * @ORM\Column(type="text", nullable = true)
      */
     private $notes;
 
