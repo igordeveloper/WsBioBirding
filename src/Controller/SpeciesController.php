@@ -17,7 +17,7 @@ class SpeciesController extends AbstractController
     {
 
         try{
-            if($autenticate->verify($request->headers->get('authorization'))){
+            if($autenticate->verify($request->headers->get('authorizationCode'))){
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = new Species();
                 $species->setScientificName($request->get('scientific_name'));
@@ -37,11 +37,8 @@ class SpeciesController extends AbstractController
     public function search(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
-
-        var_dump($request->headers->get('authorizationCode'));
-
         try{
-            if($autenticate->verify($request->headers->get('authorization'))){
+            if($autenticate->verify($request->headers->get('authorizationCode'))){
                 $species = $this->getDoctrine()->getRepository(Species::class)->findByScientificName($request->get('scientific_name'));
                 $lista = array();
 
@@ -68,7 +65,7 @@ class SpeciesController extends AbstractController
     {
 
         try{
-            if($autenticate->verify($request->headers->get('authorization'))){
+            if($autenticate->verify($request->headers->get('authorizationCode'))){
                 $species = $this->getDoctrine()->getRepository(Species::class)->find($request->get('scientific_name'));
                 
                 if($species){
@@ -94,7 +91,7 @@ class SpeciesController extends AbstractController
     {
 
         try{
-            if($autenticate->verify($request->headers->get('authorization'))){
+            if($autenticate->verify($request->headers->get('authorizationCode'))){
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = $entityManager->getRepository(Species::class)->find($request->get('scientific_name'));
 
