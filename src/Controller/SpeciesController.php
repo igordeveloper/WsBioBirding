@@ -102,6 +102,7 @@ class SpeciesController extends AbstractController
                 }else{
                     $species->setScientificName($request->get('new_scientific_name'));
                     $species->setNotes($request->get('notes'));
+                    $species->setConservationState($request->get('conservationState'));
                     $entityManager->flush();
                   return new JsonResponse(['authorized' => true, 'response' => $translator->trans('update')]);
 
