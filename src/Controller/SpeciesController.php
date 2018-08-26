@@ -21,7 +21,8 @@ class SpeciesController extends AbstractController
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = new Species();
                 $species->setScientificName($request->get('scientific_name'));
-                $species->getNotes($request->get('notes'));
+                $species->setNotes($request->get('notes'));
+                $species->setConservationState($request->get('conservationState'));
                 $entityManager->persist($species);
                 $entityManager->flush();
                 return new JsonResponse(['authorized' => true, 'response' => $translator->trans('insert')]);
