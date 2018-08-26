@@ -18,10 +18,9 @@ class PopularNameController extends Controller
     {
 
         try{
-            if($autenticate->verify($request->headers->get('nickname'), $request->headers->get('password'))){
-
+            if($autenticate->verify($request->headers->get('authorizationCode'))){
                 $entityManager = $this->getDoctrine()->getManager();
-                $species = $entityManager->getRepository(Species::class)->find($request->get('scientific_name'));
+                $species = $entityManager->getRepository(Species::class)->find($request->get('scientificName'));
 
                 $popularName = new PopularName();
                 $popularName->setScientificName($species);
@@ -33,7 +32,7 @@ class PopularNameController extends Controller
                 $entityManager->flush();
                 return new JsonResponse(['authorized' => true, 'response' => $translator->trans('insert')]);
             }else{
-                return new JsonResponse(['authorized' => false]); 
+                return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException |  \Doctrine\ORM\ORMException $ex){
             return new JsonResponse(['exception' => $ex->getmessage()]);
@@ -45,8 +44,8 @@ class PopularNameController extends Controller
     {
 
         try{
-            if($autenticate->verify($request->headers->get('nickname'), $request->headers->get('password'))){
-                $popularName = $this->getDoctrine()->getRepository(PopularName::class)->findBy(['scientificName' => $request->get('name')]);
+            if($autenticate->verify($request->headers->get('authorizationCode'))){
+                $popularName = $this->getDoctrine()->getRepository(PopularName::class)->findBy(['scientificName' => $request->get('scientificName')]);
 
 
                 $lista = array();
@@ -56,7 +55,9 @@ class PopularNameController extends Controller
                                     'name' => $name->getName()
                                     );         
                 }
-                return new JsonResponse(['status' => $translator->trans('success'), 'response' => $lista]);
+                return new JsonResponse(['authorized' => true , 'response' => $lista]);
+            }else{
+                return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
             }
         }catch(\TypeError $ex){
             return new JsonResponse(['exception' => $ex->getmessage()]);
@@ -68,18 +69,22 @@ class PopularNameController extends Controller
     {
 
         try{
-            if($autenticate->verify($request->headers->get('nickname'), $request->headers->get('password'))){
-                $popularName = $this->getDoctrine()->getRepository(PopularName::class)->findBy(['name' => "%".$request->get('name')."%"]);
+            if($autenticate->verify($request->headers->get('authorizationCode'))){
+                $popularName = $this->getDoctrine()->getRepository(PopularName::class)->find(['scientificName' => $request->get('scientificName'), 'name' => $request->get('name')]);
 
 
-                $lista = array();
-                foreach ($popularName as $name) {
-                    $lista[] = array(
-                                    'scientific_name' => $name->getScientificName()->getScientificName(), 
-                                    'name' => $name->getName()
-                                    );         
+                if($popularName){
+                    $lista = array(
+                            'scientificName' => $popularName->getScientificName()->getScientificName(), 
+                            'name' => $popularName->getName(),
+                            );  
+                }else{
+                    $lista = NULL;
                 }
+
                 return new JsonResponse(['status' => $translator->trans('success'), 'response' => $lista]);
+            }else{
+                return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
             }
         }catch(\TypeError $ex){
             return new JsonResponse(['exception' => $ex->getmessage()]);
@@ -91,21 +96,23 @@ class PopularNameController extends Controller
     {
 
         try{
-            if($autenticate->token($request->headers->get('token'))){
+            if($autenticate->verify($request->headers->get('authorizationCode'))){
                 $entityManager = $this->getDoctrine()->getManager();
                 $popularName = $entityManager->getRepository(PopularName::class)
                                 ->findOneBy([
-                                'scientific_name' => $request->get('scientific_name'),
+                                'scientificName' => $request->get('scientificName'),
                                 'name' => $request->get('name')
                                 ]);
 
                 if(!$popularName) {
                     throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
                 }else{
-                    $popularName->setName($request->get('new_name'));
+                    $popularName->setName($request->get('newName'));
                     $entityManager->flush();
-                    return new JsonResponse(['status' => $translator->trans('success'), 'response' => $translator->trans('update')]);
+                    return new JsonResponse(['authorized' => true, 'response' => $translator->trans('update')]);
                 }
+            }else{
+                return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\InvalidArgumentException | \Doctrine\ORM\ORMException $ex){
             return new JsonResponse(['exception' => $ex->getmessage()]);
@@ -117,16 +124,23 @@ class PopularNameController extends Controller
     {
 
         try{
-            if($autenticate->token($request->headers->get('token'))){
+            if($autenticate->verify($request->headers->get('authorizationCode'))){
                 $entityManager = $this->getDoctrine()->getManager();
-                $species = $entityManager->getRepository(Species::class)->find($request->get('scientific_name'));
-                if(!$species) {
+                $popularName = $entityManager->getRepository(PopularName::class)
+                                ->findOneBy([
+                                'scientificName' => $request->get('scientificName'),
+                                'name' => $request->get('name')
+                                ]);
+    
+                if(!$popularName) {
                     throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
                 }else{
-                    $entityManager->remove($species);
+                    $entityManager->remove($popularName);
                     $entityManager->flush();
-                    return new JsonResponse(['status' => $translator->trans('success'), 'response' => $translator->trans('delete')]);
+                    return new JsonResponse(['authorized' => true, 'response' => $translator->trans('delete')]);
                 }
+            }else{
+                return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\InvalidArgumentException | \Doctrine\ORM\ORMException $ex){
             return new JsonResponse(['exception' => $ex->getmessage()]);
