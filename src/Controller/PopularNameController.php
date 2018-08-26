@@ -51,7 +51,7 @@ class PopularNameController extends Controller
                 $lista = array();
                 foreach ($popularName as $name) {
                     $lista[] = array(
-                                    'scientific_name' => $name->getScientificName()->getScientificName(), 
+                                    'scientificName' => $name->getScientificName()->getScientificName(), 
                                     'name' => $name->getName()
                                     );         
                 }
@@ -131,7 +131,7 @@ class PopularNameController extends Controller
                                 'scientificName' => $request->get('scientificName'),
                                 'name' => $request->get('name')
                                 ]);
-    
+
                 if(!$popularName) {
                     throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
                 }else{
