@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Species;
 use App\Helper\AutenticateHelper;
+use App\Helper\WeatherHelper;
 use Symfony\Component\Translation\TranslatorInterface;
 
 
@@ -64,6 +65,10 @@ class SpeciesController extends AbstractController
 
     public function select(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
+
+
+        $weatherHelper = new WeatherHelper();
+        var_dump($weatherHelper->check());
 
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
