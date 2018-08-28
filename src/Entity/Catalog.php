@@ -5,11 +5,10 @@ namespace App\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * @ORM\Entity(repositoryClass="App\Repository\BirdListRepository")
+ * @ORM\Entity(repositoryClass="App\Repository\CatalogRepository")
  */
-class BirdList
+class Catalog
 {
-
     /**
      * @ORM\Id()
      * @ORM\GeneratedValue()
@@ -21,28 +20,28 @@ class BirdList
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false, referencedColumnName="rg", name="rg")
      */
-    private $rg;
+    private $user;
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Species")
      * @ORM\JoinColumn(nullable=false, referencedColumnName="scientific_name", name="scientific_name")
      */
-    private $scientificName;
+    private $species;
 
     /**
-    * @ORM\Column(type="string", nullable=false, length=7)
-     */ 
+     * @ORM\Column(type="string", length=7)
+     */
     private $age;
 
     /**
-     * @ORM\Column(type="string", nullable=false, length=13)
+     * @ORM\Column(type="string", length=13)
      */
     private $sex;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=7)
      */
-    private $latitud;
+    private $latitude;
 
     /**
      * @ORM\Column(type="decimal", precision=10, scale=7)
@@ -70,9 +69,9 @@ class BirdList
     private $weather;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="text", nullable=true)
      */
-    private $details;
+    private $notes;
 
     /**
      * @ORM\Column(type="datetime")
@@ -80,35 +79,35 @@ class BirdList
     private $date;
 
     /**
-     * @ORM\Column(type="string", length=20)
+     * @ORM\Column(type="string", length=20, nullable=true)
      */
-    private $idCode;
+    private $identificationCode;
 
     public function getId(): ?int
     {
         return $this->id;
     }
 
-    public function getRg(): ?User
+    public function getUser(): ?User
     {
-        return $this->rg;
+        return $this->user;
     }
 
-    public function setRg(?User $rg): self
+    public function setUser(?User $user): self
     {
-        $this->rg = $rg;
+        $this->user = $user;
 
         return $this;
     }
 
-    public function getScientificName(): ?Species
+    public function getSpecies(): ?Species
     {
-        return $this->scientificName;
+        return $this->species;
     }
 
-    public function setScientificName(?Species $scientificName): self
+    public function setSpecies(?Species $species): self
     {
-        $this->scientificName = $scientificName;
+        $this->species = $species;
 
         return $this;
     }
@@ -120,9 +119,6 @@ class BirdList
 
     public function setAge(string $age): self
     {
-        if (!in_array($status, array(self::STATUS_VISIBLE, self::STATUS_INVISIBLE))) {
-            throw new \InvalidArgumentException("Invalid age");
-        }
         $this->age = $age;
 
         return $this;
@@ -140,14 +136,14 @@ class BirdList
         return $this;
     }
 
-    public function getLatitud(): ?float
+    public function getLatitude(): ?float
     {
-        return $this->latitud;
+        return $this->latitude;
     }
 
-    public function setLatitud(float $latitud): self
+    public function setLatitude(float $latitude): self
     {
-        $this->latitud = $latitud;
+        $this->latitude = $latitude;
 
         return $this;
     }
@@ -176,12 +172,12 @@ class BirdList
         return $this;
     }
 
-    public function getHumidity(): ?int
+    public function getHumidity(): ?float
     {
         return $this->humidity;
     }
 
-    public function setHumidity(int $humidity): self
+    public function setHumidity(float $humidity): self
     {
         $this->humidity = $humidity;
 
@@ -212,14 +208,14 @@ class BirdList
         return $this;
     }
 
-    public function getDetails(): ?string
+    public function getNotes(): ?string
     {
-        return $this->details;
+        return $this->notes;
     }
 
-    public function setDetails(?string $details): self
+    public function setNotes(?string $notes): self
     {
-        $this->details = $details;
+        $this->notes = $notes;
 
         return $this;
     }
@@ -236,14 +232,14 @@ class BirdList
         return $this;
     }
 
-    public function getIdCode(): ?string
+    public function getIdentificationCode(): ?string
     {
-        return $this->idCode;
+        return $this->identificationCode;
     }
 
-    public function setIdCode(string $idCode): self
+    public function setIdentificationCode(?string $identificationCode): self
     {
-        $this->idCode = $idCode;
+        $this->identificationCode = $identificationCode;
 
         return $this;
     }
