@@ -44,7 +44,7 @@ class User
      * @ORM\ManyToOne(targetEntity="App\Entity\AccessLevel")
      * @ORM\JoinColumn(nullable=false, referencedColumnName="access_level", name="access_level")
      */
-    private $access_level;
+    private $accessLevel;
 
     /**
      * @ORM\Column(type="boolean", options={"default" : 1})
@@ -126,12 +126,12 @@ class User
 
     public function getAccessLevel(): ?AccessLevel
     {
-        return $this->access_level;
+        return $this->accessLevel;
     }
 
-    public function setAccessLevel(?AccessLevel $access_level): self
+    public function setAccessLevel(?AccessLevel $accessLevel): self
     {
-        $this->access_level = $access_level;
+        $this->accessLevel = $accessLevel;
 
         return $this;
     }
