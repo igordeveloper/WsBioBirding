@@ -10,7 +10,6 @@ use Doctrine\ORM\Mapping as ORM;
 class PopularName
 {
 
-
     /**
      * @ORM\Id()
      * @ORM\Column(type="string", length=120)
@@ -20,18 +19,25 @@ class PopularName
     /**
      * @ORM\Id()
      * @ORM\ManyToOne(targetEntity="App\Entity\Species")
-     * @ORM\JoinColumn(nullable=false, referencedColumnName="scientific_name", name="scientific_name")
+     * @ORM\JoinColumn(nullable=false, referencedColumnName="scientific_name", name="species")
      */
-    private $scientificName;
-
-    public function getId()
-    {
-        return $this->id;
-    }
+    private $species;
 
     public function getName(): ?string
     {
         return $this->name;
+    }
+
+    public function getSpecies(): ?Species
+    {
+        return $this->species;
+    }
+
+    public function setSpecies(?Species $species): self
+    {
+        $this->species = $species;
+
+        return $this;
     }
 
     public function setName(string $name): self
@@ -41,15 +47,4 @@ class PopularName
         return $this;
     }
 
-    public function getScientificName(): ?Species
-    {
-        return $this->scientificName;
-    }
-
-    public function setScientificName(?Species $scientificName): self
-    {
-        $this->scientificName = $scientificName;
-
-        return $this;
-    }
 }

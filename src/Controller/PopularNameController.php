@@ -20,10 +20,10 @@ class PopularNameController extends Controller
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
                 $entityManager = $this->getDoctrine()->getManager();
-                $species = $entityManager->getRepository(Species::class)->find($request->get('scientificName'));
+                $species = $entityManager->getRepository(Species::class)->find($request->get('species'));
 
                 $popularName = new PopularName();
-                $popularName->setScientificName($species);
+                $popularName->setSpecies($species);
                 $popularName->setName($request->get('name'));
 
                 $entityManager->persist($species);
@@ -45,13 +45,13 @@ class PopularNameController extends Controller
 
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
-                $popularName = $this->getDoctrine()->getRepository(PopularName::class)->findBy(['scientificName' => $request->get('scientificName')]);
+                $popularName = $this->getDoctrine()->getRepository(PopularName::class)->findBy(['species' => $request->get('species')]);
 
 
                 $lista = array();
                 foreach ($popularName as $name) {
                     $lista[] = array(
-                                    'scientificName' => $name->getScientificName()->getScientificName(), 
+                                    'species' => $name->getSpecies()->getScientificName(), 
                                     'name' => $name->getName()
                                     );         
                 }
@@ -70,12 +70,12 @@ class PopularNameController extends Controller
 
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
-                $popularName = $this->getDoctrine()->getRepository(PopularName::class)->find(['scientificName' => $request->get('scientificName'), 'name' => $request->get('name')]);
+                $popularName = $this->getDoctrine()->getRepository(PopularName::class)->find(['species' => $request->get('species'), 'name' => $request->get('name')]);
 
 
                 if($popularName){
                     $lista = array(
-                            'scientificName' => $popularName->getScientificName()->getScientificName(), 
+                            'species' => $popularName->getSpecies()->getScientificName(), 
                             'name' => $popularName->getName(),
                             );  
                 }else{
@@ -100,7 +100,7 @@ class PopularNameController extends Controller
                 $entityManager = $this->getDoctrine()->getManager();
                 $popularName = $entityManager->getRepository(PopularName::class)
                                 ->findOneBy([
-                                'scientificName' => $request->get('scientificName'),
+                                'species' => $request->get('species'),
                                 'name' => $request->get('name')
                                 ]);
 
@@ -128,7 +128,7 @@ class PopularNameController extends Controller
                 $entityManager = $this->getDoctrine()->getManager();
                 $popularName = $entityManager->getRepository(PopularName::class)
                                 ->findOneBy([
-                                'scientificName' => $request->get('scientificName'),
+                                'species' => $request->get('species'),
                                 'name' => $request->get('name')
                                 ]);
 
