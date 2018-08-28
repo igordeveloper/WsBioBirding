@@ -66,10 +66,6 @@ class SpeciesController extends AbstractController
     public function select(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
-
-        $weatherHelper = new WeatherHelper();
-        var_dump($weatherHelper->check());
-
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
                 $species = $this->getDoctrine()->getRepository(Species::class)->find($request->get('scientificName'));
