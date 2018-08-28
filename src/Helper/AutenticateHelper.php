@@ -4,14 +4,10 @@ namespace App\Helper;
 
 use App\Entity\User;
 use Doctrine\ORM\EntityManager;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 
 
 class AutenticateHelper
 {
-
-
-    private $container;
 
     public function __construct(EntityManager $em)
     {
