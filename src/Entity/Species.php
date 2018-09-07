@@ -12,7 +12,13 @@ class Species
 
     /**
      * @ORM\Id()
-     * @ORM\Column(type="string", length=120)
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
+     */
+    private $id;
+
+    /**
+     * @ORM\Column(type="string", length=120, unique=true)
      */
     private $scientificName;
 
@@ -25,6 +31,11 @@ class Species
      * @ORM\Column(type="string", length=20, nullable = true)
      */
     private $conservationState;
+
+    public function getId(): ?int
+    {
+        return $this->id;
+    }
 
     public function getScientificName(): ?string
     {
@@ -43,7 +54,7 @@ class Species
         return $this->notes;
     }
 
-    public function setNotes(string $notes): self
+    public function setNotes(?string $notes): self
     {
         $this->notes = $notes;
 
@@ -61,9 +72,5 @@ class Species
 
         return $this;
     }
-
-
-
-
 
 }

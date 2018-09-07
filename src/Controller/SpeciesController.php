@@ -68,7 +68,7 @@ class SpeciesController extends AbstractController
 
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
-                $species = $this->getDoctrine()->getRepository(Species::class)->find($request->get('scientificName'));
+                $species = $this->getDoctrine()->getRepository(Species::class)->find($request->get('id'));
                 
                 if($species){
                     $lista = array(
@@ -96,12 +96,12 @@ class SpeciesController extends AbstractController
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
                 $entityManager = $this->getDoctrine()->getManager();
-                $species = $entityManager->getRepository(Species::class)->find($request->get('scientificName'));
+                $species = $entityManager->getRepository(Species::class)->find($request->get('id'));
 
                 if(!$species) {
                     throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
                 }else{
-                    $species->setScientificName($request->get('newScientificName'));
+                    $species->setScientificName($request->get('scientificName'));
                     $species->setNotes($request->get('notes'));
                     $species->setConservationState($request->get('conservationState'));
                     $entityManager->flush();
