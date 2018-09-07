@@ -24,7 +24,7 @@ class Catalog
 
     /**
      * @ORM\ManyToOne(targetEntity="App\Entity\Species")
-     * @ORM\JoinColumn(nullable=false, referencedColumnName="scientific_name", name="species")
+     * @ORM\JoinColumn(nullable=false, referencedColumnName="id", name="species")
      */
     private $species;
 
