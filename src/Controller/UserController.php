@@ -57,7 +57,7 @@ class UserController extends Controller
             $user = $this->getDoctrine()->getRepository(User::class)->findByEmailOrNickName($request->headers->get('nickname'), $request->headers->get('password'));
 
             if(!$user){
-                return new JsonResponse(['authorized' => false]);
+                return new JsonResponse(['notFound' => true]);
             }else{
 
                 $userInfo = [];
