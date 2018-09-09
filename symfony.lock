@@ -129,7 +129,7 @@
         "version": "v6.0.2"
     },
     "symfony/asset": {
-        "version": "v4.1.1"
+        "version": "v4.1.4"
     },
     "symfony/browser-kit": {
         "version": "v4.1.1"
@@ -384,15 +384,6 @@
             "branch": "master",
             "version": "3.3",
             "ref": "dae9b39fd6717970be7601101ce5aa960bf53d9a"
-        }
-    },
-    "symfony/webpack-encore-pack": {
-        "version": "1.0",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "1.0",
-            "ref": "0e8ef1deeaef761e1defbec0be694237660ab13a"
         }
     },
     "symfony/yaml": {

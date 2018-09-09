@@ -104,7 +104,7 @@ class UserController extends Controller
 
     public function email(\Swift_Mailer $mailer)
     {
-        $message = (new \Swift_Message('Hello Email'))
+        $message = (new \Swift_Message('BioBirding'))
             ->setFrom('igor.kusmitsch@gmail.com')
             ->setTo('igor.kusmitsch@gmail.com')
         ->setBody(
