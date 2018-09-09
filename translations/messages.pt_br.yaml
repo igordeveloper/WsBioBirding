@@ -7,3 +7,6 @@ update: Registro atualizado com sucesso
 not_found: Registro não encontrado
 empty: não pode ser nulo
 not_authorized: não autorizado
+Hello: Olá
+msg_new_password: Sua nova senha de acesso é
+regards: Atenciosamente

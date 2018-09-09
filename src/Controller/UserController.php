@@ -102,4 +102,25 @@ class UserController extends Controller
 
     }
 
+    public function email(\Swift_Mailer $mailer)
+    {
+        $message = (new \Swift_Message('Hello Email'))
+            ->setFrom('igor.kusmitsch@gmail.com')
+            ->setTo('igor.kusmitsch@gmail.com')
+        ->setBody(
+            $this->renderView(
+                'emails/new_password.html.twig',
+                array('name' => 'igor kusmitsch', 'password' => '12121212')
+            ),
+            'text/html'
+        );
+
+        if($mailer->send($message)){
+            return new JsonResponse(['authorized' => true]); 
+        }else{
+                return new JsonResponse(['authorized' => false]); 
+        }
+
+    }
+
 }
