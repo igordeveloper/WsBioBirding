@@ -62,7 +62,7 @@ class UserController extends Controller
 
                 $userInfo = [];
                 $userInfo["fullName"] = $user->getFullName();
-                $userInfo["emal"] = $user->getEmail();
+                $userInfo["email"] = $user->getEmail();
                 $userInfo["nickname"] = $user->getNickName();
                 $userInfo["accessLevel"] = $user->getAccessLevel()->getAccessLevel();
                 $userInfo["rg"] = $user->getRg();
