@@ -57,7 +57,7 @@ class UserController extends Controller
             $user = $this->getDoctrine()->getRepository(User::class)->findByEmailOrNickName($request->headers->get('nickname'), $request->headers->get('password'));
 
             if(!$user){
-                throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
+                return new JsonResponse(['authorized' => false]);
             }else{
 
                 $userInfo = [];
