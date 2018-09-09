@@ -102,25 +102,37 @@ class UserController extends Controller
 
     }
 
-    public function email(\Swift_Mailer $mailer)
+    public function newPassword(Request $request, \Swift_Mailer $mailer, TranslatorInterface $translator)
     {
-        $message = (new \Swift_Message('BioBirding'))
-            ->setFrom('igor.kusmitsch@gmail.com')
-            ->setTo('igor.kusmitsch@gmail.com')
-        ->setBody(
-            $this->renderView(
-                'emails/new_password.html.twig',
-                array('name' => 'igor kusmitsch', 'password' => '12121212')
-            ),
-            'text/html'
-        );
+        try{
+            $user = $this->getDoctrine()->getRepository(User::class)->findByEmail($request->headers->get('email'));
 
-        if($mailer->send($message)){
-            return new JsonResponse(['authorized' => true]); 
-        }else{
-                return new JsonResponse(['authorized' => false]); 
+            if(!$user){
+                throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
+            }else{
+
+                $password = bin2hex(random_bytes(5));
+                $entityManager = $this->getDoctrine()->getManager();
+                $user->setPassword(hash('sha256', $password));
+                $entityManager->flush();
+
+                $message = (new \Swift_Message('BioBirding'))
+                    ->setFrom('igor.kusmitsch@gmail.com')
+                    ->setTo($user->getEmail())
+                ->setBody(
+                    $this->renderView(
+                        'emails/new_password.html.twig',
+                        array('name' => $user->getFullName(), 'password' => $password)
+                    ),
+                    'text/html'
+                );
+
+                $mailer->send($message);
+                return new JsonResponse(['authorized' => true, 'response' => $translator->trans('sendPassword')]);
+            }
+        }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\DBAL\Exception\InvalidArgumentException$ex){
+            return new JsonResponse(['exception' => $ex->getmessage()]);
         }
-
     }
 
 }
