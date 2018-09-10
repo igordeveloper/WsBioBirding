@@ -108,7 +108,7 @@ class UserController extends Controller
             $user = $this->getDoctrine()->getRepository(User::class)->findByEmail($request->headers->get('email'));
 
             if(!$user){
-                throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
+                return new JsonResponse(['notFound' => true]);
             }else{
 
                 $password = bin2hex(random_bytes(5));
