@@ -42,18 +42,18 @@ class SpeciesController extends AbstractController
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
                 $species = $this->getDoctrine()->getRepository(Species::class)->findByScientificName($request->get('scientificName'));
-                $lista = array();
+                $list = array();
 
 
                 foreach ($species as $specie) {
 
 
-                    $lista[] = array(
+                    $list[] = array(
                                     'id' => $specie->getId(), 
                                     'scientificName' => $specie->getScientificName()
                                     );         
                 }
-                return new JsonResponse(['authorized' => true , 'species' => $lista]);
+                return new JsonResponse(['authorized' => true , 'species' => $list]);
             }else{
                 return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
             }
@@ -71,16 +71,43 @@ class SpeciesController extends AbstractController
                 $species = $this->getDoctrine()->getRepository(Species::class)->find($request->get('id'));
                 
                 if($species){
-                    $lista = array(
+                    $list = array(
                             'scientificName' => $species->getScientificName(), 
                             'notes' => $species->getNotes(),
                             'conservationState' => $species->getConservationState(),
                             );  
                 }else{
-                    $lista = NULL;
+                    $list = NULL;
                 }
 
-                return new JsonResponse(['authorized' => true , 'species' => $lista]);
+                return new JsonResponse(['authorized' => true , 'species' => $list]);
+            }else{
+                return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
+            }
+        }catch(\TypeError $ex){
+            return new JsonResponse(['exception' => $ex->getmessage()]);
+        }
+    }
+
+
+    public function selectAll(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    {
+
+        try{
+            if($autenticate->verify($request->headers->get('authorizationCode'))){
+                $species = $this->getDoctrine()->getRepository(Species::class)->findAll();
+                $list = array();
+
+                foreach ($species as $specie) {
+
+
+                    $list[] = array(
+                                    'id' => $specie->getId(), 
+                                    'scientificName' => $specie->getScientificName()
+                                    );         
+                }
+
+                return new JsonResponse(['authorized' => true , 'species' => $list]);
             }else{
                 return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
             }

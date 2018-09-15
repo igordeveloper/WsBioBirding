@@ -8,6 +8,11 @@ species_select:
     controller: App\Controller\SpeciesController::select
     methods: [POST, HEAD, GET]
 
+species_select_all:
+    path: species/selectAll
+    controller: App\Controller\SpeciesController::selectAll
+    methods: [POST, HEAD, GET]
+
 species_search:
     path: species/search
     controller: App\Controller\SpeciesController::search
