@@ -55,7 +55,8 @@ class UserController extends Controller
     {
         
         try{
-            $user = $this->getDoctrine()->getRepository(User::class)->findByEmailOrNickName($request->headers->get('nickname'), $request->headers->get('password'));
+            $user = $this->getDoctrine()->getRepository(User::class)
+                    ->findByEmailOrNickName($request->headers->get('nickname'), $request->headers->get('password'));
 
             if(!$user){
                 return new JsonResponse(['notFound' => true]);
