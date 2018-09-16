@@ -12,3 +12,5 @@ msg_new_password: Segue abaixo sua nova senha de acesso. É aconselhável altera
 regards: Atenciosamente
 sendPassword: A nova senha foi enviada para o endereço  de e-mail informado
 invalidEmail: O e-mail informado não esta cadastrado
+exception_type_error: O argumento enviado não pode ser nulo.
+exception_duplicate_entry: Entrada duplicada. A informação enviada já esta cadastrado na base de dados.
