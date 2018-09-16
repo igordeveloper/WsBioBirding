@@ -22,8 +22,9 @@ class SpeciesController extends AbstractController
 
                 $species = new Species();
                 $species->setScientificName($request->get("scientificName"));
-                $species->setNotes($request->get("notes"));
-                $species->setConservationState($request->get("conservationState"));
+                $species->setNotes(empty($request->get("notes")) ? NULL : $request->get("notes"));
+                $species->setConservationState(empty($request->get("conservationState")) ? 
+                            NULL : $request->get("conservationState"));
 
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($species);
