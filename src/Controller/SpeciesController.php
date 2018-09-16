@@ -103,8 +103,9 @@ class SpeciesController extends AbstractController
                 if($species){
                     $list = array(
                         "scientificName" => $species->getScientificName(), 
-                        "notes" => $species->getNotes(),
-                        "conservationState" => $species->getConservationState(),
+                        "notes" => empty($species->getNotes()) ? "" : $species->getNotes(),
+                        "conservationState" => empty($species->getConservationState()) ? "" :
+                                                $species->getConservationState(),
                     );  
                 }else{
                     $list = NULL;
