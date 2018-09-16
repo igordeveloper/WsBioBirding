@@ -8,21 +8,20 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Helper\AutenticateHelper;
 use App\Entity\User;
 use App\Entity\AccessLevel;
-use Symfony\Component\Translation\TranslatorInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 
 class UserController extends Controller
 {
 
-    public function insert(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    public function insert(Request $request, AutenticateHelper $autenticate)
     {
 
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
 
                 if( empty($request->get('password')) || $request->get('password') == NULL) {
-                    throw new \TypeError("parameter [password]: " . $translator->trans('empty'));
+                    throw new \TypeError("NULL password");
                 }
 
                 $entityManager = $this->getDoctrine()->getManager();
@@ -40,9 +39,9 @@ class UserController extends Controller
 
                 $entityManager->persist($user);
                 $entityManager->flush();
-                return new JsonResponse(['authorized' => true, 'response' => $translator->trans('insert')]);
+                return new JsonResponse(['authorized' => true, 'response' => true]);
             }else{
-                return new JsonResponse(['authorized' => false]); 
+                return new JsonResponse(['authorized' => false]);
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\ORM\ORMException $ex){
             return new JsonResponse(['exception' => $ex->getmessage()]);
@@ -50,7 +49,7 @@ class UserController extends Controller
     }
 
 
-    public function validate(Request $request, TranslatorInterface $translator)
+    public function validate(Request $request)
     {
 
         try{
@@ -59,7 +58,6 @@ class UserController extends Controller
             if(!$user){
                 return new JsonResponse(['notFound' => true]);
             }else{
-
                 $userInfo = [];
                 $userInfo["fullName"] = $user->getFullName();
                 $userInfo["email"] = $user->getEmail();
@@ -74,7 +72,7 @@ class UserController extends Controller
     }
 
 
-    public function updateStatus(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    public function updateStatus(Request $request, AutenticateHelper $autenticate)
     {
 
         try{
@@ -83,18 +81,14 @@ class UserController extends Controller
                 $user = $this->getDoctrine()->getRepository(User::class)->findByRg($request->get('rg'));
 
                 if(!$user){
-                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
+                    return new JsonResponse(['authorized' => false]); 
                 }else{
-
                     $entityManager = $this->getDoctrine()->getManager();
                     $user->setStatus($request->get('status'));
                     $entityManager->flush();
-                    
-                    return new JsonResponse(['authorized' => true, 'response' => $translator->trans('update')]);
-
+                    return new JsonResponse(['authorized' => true, 'response' => true]);
                 }
-
-                return new JsonResponse(['authorized' => false]); 
+                
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\DBAL\Exception\InvalidArgumentException$ex){
             return new JsonResponse(['exception' => $ex->getmessage()]);
@@ -102,7 +96,7 @@ class UserController extends Controller
 
     }
 
-    public function newPassword(Request $request, \Swift_Mailer $mailer, TranslatorInterface $translator)
+    public function recoverPassword(Request $request, \Swift_Mailer $mailer)
     {
         try{
             $user = $this->getDoctrine()->getRepository(User::class)->findByEmail($request->headers->get('email'));
@@ -128,7 +122,7 @@ class UserController extends Controller
                 );
 
                 $mailer->send($message);
-                return new JsonResponse(['authorized' => true, 'response' => $translator->trans('sendPassword')]);
+                return new JsonResponse(['response' => true ]);
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\DBAL\Exception\InvalidArgumentException$ex){
             return new JsonResponse(['exception' => $ex->getmessage()]);
