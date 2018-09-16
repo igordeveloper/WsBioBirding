@@ -18,35 +18,35 @@ class UserController extends Controller
     {
         
         try{
-            if($autenticate->verify($request->headers->get('authorizationCode'))){
+            if($autenticate->verify($request->headers->get("authorizationCode"))){
 
-                if( empty($request->get('password')) || $request->get('password') == NULL){
+                if( empty($request->get("password")) || $request->get("password") == NULL){
                     throw new \TypeError("NULL password");
                 }
 
                 $entityManager = $this->getDoctrine()->getManager();
-                $accessLevel = $entityManager->getRepository(AccessLevel::class)->find($request->get('accessLevel'));
+                $accessLevel = $entityManager->getRepository(AccessLevel::class)->find($request->get("accessLevel"));
 
                 $user = new User();
-                $user->setRg($request->get('rg'))
-                        ->setFullName($request->get('full_name'))
-                        ->setEmail($request->get('email'))
-                        ->setNickName($request->get('nickname'))
-                        ->setPassword(hash('sha256', $request->get('password')))
-                        ->setCrBio($request->get('crBio'))
+                $user->setRg($request->get("rg"))
+                        ->setFullName($request->get("full_name"))
+                        ->setEmail($request->get("email"))
+                        ->setNickName($request->get("nickname"))
+                        ->setPassword(hash("sha256", $request->get("password")))
+                        ->setCrBio($request->get("crBio"))
                         ->setAccessLevel($accessLevel)
                         ->setEnabled(true);
 
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                return new JsonResponse(['authorized' => true, 'response' => true]);
+                return new JsonResponse(["authorized" => true, "response" => true]);
             }else{
-                return new JsonResponse(['authorized' => false]);
+                return new JsonResponse(["authorized" => false]);
 
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\ORM\ORMException $ex){
-            return new JsonResponse(['exception' => $ex->getmessage()]);
+            return new JsonResponse(["exception" => $ex->getmessage()]);
         }
     }
 
@@ -56,10 +56,10 @@ class UserController extends Controller
         
         try{
             $user = $this->getDoctrine()->getRepository(User::class)
-                    ->findByEmailOrNickName($request->headers->get('nickname'), $request->headers->get('password'));
+                    ->findByEmailOrNickName($request->headers->get("nickname"), $request->headers->get("password"));
 
             if(!$user){
-                return new JsonResponse(['notFound' => true]);
+                return new JsonResponse(["notFound" => true]);
             }else{
                 $userInfo = [];
                 $userInfo["fullName"] = $user->getFullName();
@@ -68,10 +68,10 @@ class UserController extends Controller
                 $userInfo["accessLevel"] = $user->getAccessLevel()->getAccessLevel();
                 $userInfo["rg"] = $user->getRg();
 
-                return new JsonResponse(['authorized' => true, 'userInfo'=>$userInfo]);
+                return new JsonResponse(["authorized" => true, "userInfo"=>$userInfo]);
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\DBAL\Exception\InvalidArgumentException$ex){
-            return new JsonResponse(['exception' => $ex->getmessage()]);
+            return new JsonResponse(["exception" => $ex->getmessage()]);
         }
     }
 
@@ -80,25 +80,25 @@ class UserController extends Controller
     {
         
         try{
-            if($autenticate->verify($request->headers->get('authorizationCode'))){
+            if($autenticate->verify($request->headers->get("authorizationCode"))){
 
-                $user = $this->getDoctrine()->getRepository(User::class)->findByRg($request->get('rg'));
+                $user = $this->getDoctrine()->getRepository(User::class)->findByRg($request->get("rg"));
 
                 if(!$user){
-                    return new JsonResponse(['authorized' => false]); 
+                    return new JsonResponse(["authorized" => false]); 
                 }else{
                     
-                    $user->setStatus($request->get('status'));
+                    $user->setStatus($request->get("status"));
 
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->flush();
 
-                    return new JsonResponse(['authorized' => true, 'response' => true]);
+                    return new JsonResponse(["authorized" => true, "response" => true]);
                 }
                 
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\DBAL\Exception\InvalidArgumentException$ex){
-            return new JsonResponse(['exception' => $ex->getmessage()]);
+            return new JsonResponse(["exception" => $ex->getmessage()]);
         }
 
     }
@@ -107,35 +107,37 @@ class UserController extends Controller
     {
         
         try{
-            $user = $this->getDoctrine()->getRepository(User::class)->findByEmail($request->headers->get('email'));
+            $user = $this->getDoctrine()->getRepository(User::class)->findByEmail($request->headers->get("email"));
 
             if(!$user){
-                return new JsonResponse(['notFound' => true]);
+                return new JsonResponse(["notFound" => true]);
             }else{
 
                 $password = bin2hex(random_bytes(5));
-                $user->setPassword(hash('sha256', $password));
+                $user->setPassword(hash("sha256", $password));
 
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->flush();
 
-                $message = (new \Swift_Message('BioBirding'))
-                    ->setFrom('igor.kusmitsch@gmail.com')
+                $message = (new \Swift_Message("BioBirding"))
+                    ->setFrom("igor.kusmitsch@gmail.com")
                     ->setTo($user->getEmail())
-                ->setBody(
-                    $this->renderView(
-                        'emails/new_password.html.twig',
-                        array('name' => $user->getFullName(), 'password' => $password)
-                    ),
-                    'text/html'
+                    ->setBody(
+                        $this->renderView( "emails/new_password.html.twig",
+                                            array(
+                                                "name" => $user->getFullName(),
+                                                "password" => $password
+                                            )
+                        ),
+                        "text/html"
                 );
 
                 $mailer->send($message);
 
-                return new JsonResponse(['authorized' => true, 'response' => true ]);
+                return new JsonResponse(["authorized" => true, "response" => true ]);
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\DBAL\Exception\InvalidArgumentException$ex){
-            return new JsonResponse(['exception' => $ex->getmessage()]);
+            return new JsonResponse(["exception" => $ex->getmessage()]);
         }
     }
 }
