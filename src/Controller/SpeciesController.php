@@ -14,7 +14,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 class SpeciesController extends AbstractController
 {
 
-    public function insert(Request $request, AutenticateHelper $autenticate)
+    public function insert(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
@@ -30,12 +30,28 @@ class SpeciesController extends AbstractController
                 $entityManager->persist($species);
                 $entityManager->flush();
 
-                return new JsonResponse(["authorized" => true, "response" => true]);
+                return new JsonResponse(["authorized" => true, "status" => true]);
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
-        }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException  $ex){
-            return new JsonResponse(["exception" => $ex->getErrorCode()]);
+        }catch(\TypeError $ex){
+            return new JsonResponse([
+                        "authorized" => true,
+                        "status" => false,
+                        "message" => $translator->trans('exception_type_error')
+                        ]);
+        }catch(\Doctrine\DBAL\Exception\UniqueConstraintViolationException  $ex){
+            if($ex->getErrorCode() == 1062){
+                $message = $translator->trans('exception_duplicate_entry');
+            }else{
+                $message = $ex->getmessage();
+            }
+
+            return new JsonResponse([
+                "authorized" => true,
+                "status" => false,
+                "message" => $message
+                ]); 
         }
     }
 
