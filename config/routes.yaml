@@ -66,9 +66,9 @@ user_update_status:
     controller: App\Controller\UserController::updateStatus
     methods: [HEAD, GET, POST]
 
-user_new_password:
-    path: user/newPassword
-    controller: App\Controller\UserController::newPassword
+user_recover_password:
+    path: user/recoverPassword
+    controller: App\Controller\UserController::recoverPassword
     methods: [HEAD, GET, POST]
 
 
