@@ -56,7 +56,7 @@ class UserController extends Controller
             $user = $this->getDoctrine()->getRepository(User::class)->findByEmailOrNickName($request->headers->get('nickname'), $request->headers->get('password'));
 
             if(!$user){
-                return new JsonResponse(['authorized' => false]);
+                return new JsonResponse(['notFound' => true]);
             }else{
                 $userInfo = [];
                 $userInfo["fullName"] = $user->getFullName();
@@ -122,7 +122,7 @@ class UserController extends Controller
                 );
 
                 $mailer->send($message);
-                return new JsonResponse(['response' => true ]);
+                return new JsonResponse(['authorized' => true, 'response' => true ]);
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\DBAL\Exception\InvalidArgumentException$ex){
             return new JsonResponse(['exception' => $ex->getmessage()]);
