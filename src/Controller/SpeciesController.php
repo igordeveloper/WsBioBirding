@@ -140,10 +140,20 @@ class SpeciesController extends AbstractController
                 if(!$species) {
                     return new JsonResponse(["authorized" => true, "response" => false]);
                 }else{
-                    
+
                     $species->setScientificName($request->get("scientificName"));
-                    $species->setNotes($request->get("notes"));
-                    $species->setConservationState($request->get("conservationState"));
+
+                    if(empty($request->get("notes")) || is_null($request->get("notes")){
+                        $species->setNotes(NULL);
+                    }else{
+                        $species->setNotes($request->get("notes"));
+                    }
+                    if(empty($request->get("conservationState")) || is_null($request->get("conservationState")){
+                        $species->setConservationState(NULL);
+                    }else{
+                        $species->setConservationState($request->get("notes"));
+                    } 
+                             
                     $entityManager->flush();
 
                     return new JsonResponse(["authorized" => true, "response" => true]);
