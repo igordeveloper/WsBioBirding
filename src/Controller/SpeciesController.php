@@ -10,7 +10,6 @@ use App\Helper\AutenticateHelper;
 use App\Helper\WeatherHelper;
 use Symfony\Component\Translation\TranslatorInterface;
 
-
 class SpeciesController extends AbstractController
 {
 
@@ -19,6 +18,20 @@ class SpeciesController extends AbstractController
 
         try{
             if($autenticate->verify($request->headers->get("authorizationCode"))){
+
+
+                if( empty($request->get("scientificName")) || is_null($request->get("scientificName")) ){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('exception_type_error'));
+                }
+
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $species = $entityManager->getRepository(Species::class)
+                            ->findByScientificName($request->get("scientificName"));
+
+                if($species){
+                    throw new \Doctrine\DBAL\DBALException($translator->trans('exception_duplicate_entry'));
+                }
 
                 $species = new Species();
                 $species->setScientificName($request->get("scientificName"));
@@ -38,24 +51,12 @@ class SpeciesController extends AbstractController
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
-        }catch(\TypeError $ex){
+        }catch(\Doctrine\DBAL\DBALException | \Doctrine\DBAL\Exception\InvalidArgumentException $ex){
             return new JsonResponse([
                         "authorized" => true,
                         "status" => false,
-                        "message" => $translator->trans('exception_type_error')
+                        "message" => $translator->trans('insert')
                         ]);
-        }catch(\Doctrine\DBAL\Exception\UniqueConstraintViolationException  $ex){
-            if($ex->getErrorCode() == 1062){
-                $message = $translator->trans('exception_duplicate_entry');
-            }else{
-                $message = $ex->getmessage();
-            }
-
-            return new JsonResponse([
-                "authorized" => true,
-                "status" => false,
-                "message" => $message
-                ]); 
         }
     }
 
