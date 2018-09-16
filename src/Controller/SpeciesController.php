@@ -138,7 +138,7 @@ class SpeciesController extends AbstractController
                             ->find($request->get("id"));
 
                 if(!$species) {
-                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("Not found");
+                    return new JsonResponse(["authorized" => true, "response" => false]);
                 }else{
                     
                     $species->setScientificName($request->get("scientificName"));
