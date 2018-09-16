@@ -85,8 +85,12 @@ class SpeciesController extends AbstractController
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
-        }catch(\TypeError $ex){
-            return new JsonResponse(["exception" => $ex->getmessage()]);
+        }catch(\TypeError | \Doctrine\ORM\ORMException $ex ){
+            return new JsonResponse([
+                        "authorized" => true,
+                        "status" => false,
+                        "message" => $ex->getMessage()
+                        ]);
         }
     }
 
