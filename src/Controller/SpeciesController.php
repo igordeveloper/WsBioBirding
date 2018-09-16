@@ -30,7 +30,11 @@ class SpeciesController extends AbstractController
                 $entityManager->persist($species);
                 $entityManager->flush();
 
-                return new JsonResponse(["authorized" => true, "status" => true]);
+                return new JsonResponse([
+                            "authorized" => true,
+                            "status" => true,
+                            "message" => $translator->trans('insert')
+                            ]);
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
