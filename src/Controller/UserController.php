@@ -45,9 +45,17 @@ class UserController extends Controller
                 return new JsonResponse(["authorized" => false]);
 
             }
-        }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\ORM\ORMException $ex){
-            return new JsonResponse(["exception" => $ex->getmessage()]);
+        }catch(\TypeError $ex){
+            return new JsonResponse([
+                "authorized" => true,
+                "status" => false,
+                "message" => $translator->trans('exception_type_error')
+            ]);
+        }catch(\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex){
+        }catch(\Doctrine\ORM\ORMException $ex){
+
         }
+
     }
 
 
