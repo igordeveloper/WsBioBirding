@@ -16,6 +16,7 @@ class UserController extends Controller
 
     public function insert(Request $request, AutenticateHelper $autenticate)
     {
+        
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
 
@@ -52,6 +53,7 @@ class UserController extends Controller
 
     public function validate(Request $request)
     {
+        
         try{
             $user = $this->getDoctrine()->getRepository(User::class)->findByEmailOrNickName($request->headers->get('nickname'), $request->headers->get('password'));
 
@@ -75,6 +77,7 @@ class UserController extends Controller
 
     public function updateStatus(Request $request, AutenticateHelper $autenticate)
     {
+        
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
 
@@ -101,6 +104,7 @@ class UserController extends Controller
 
     public function recoverPassword(Request $request, \Swift_Mailer $mailer)
     {
+        
         try{
             $user = $this->getDoctrine()->getRepository(User::class)->findByEmail($request->headers->get('email'));
 
