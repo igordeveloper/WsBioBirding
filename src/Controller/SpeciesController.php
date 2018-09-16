@@ -45,17 +45,16 @@ class SpeciesController extends AbstractController
 
                 return new JsonResponse([
                             "authorized" => true,
-                            "status" => true,
-                            "message" => $translator->trans('insert')
+                            "status" => true
                             ]);
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
-        }catch(\Doctrine\DBAL\DBALException | \Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+        }catch(\Doctrine\DBAL\DBALException $ex){
             return new JsonResponse([
                         "authorized" => true,
                         "status" => false,
-                        "message" => $translator->trans('insert')
+                        "message" => $ex->getMessage()
                         ]);
         }
     }
@@ -85,7 +84,7 @@ class SpeciesController extends AbstractController
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
-        }catch(\TypeError | \Doctrine\ORM\ORMException $ex ){
+        }catch(\TypeError $ex){
             return new JsonResponse([
                         "authorized" => true,
                         "status" => false,
@@ -119,7 +118,7 @@ class SpeciesController extends AbstractController
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
-        }catch(\TypeError | \Doctrine\ORM\ORMException $ex ){
+        }catch(\TypeError | \Doctrine\ORM\ORMException $ex){
             return new JsonResponse([
                         "authorized" => true,
                         "status" => false,
@@ -158,7 +157,7 @@ class SpeciesController extends AbstractController
     }
 
 
-    public function update(Request $request, AutenticateHelper $autenticate)
+    public function update(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
@@ -168,23 +167,28 @@ class SpeciesController extends AbstractController
                 $species = $entityManager->getRepository(Species::class)
                             ->find($request->get("id"));
 
-                if(!$species) {
-                    return new JsonResponse(["authorized" => true, "response" => false]);
-                }else{
-
-                    $species->setScientificName($request->get("scientificName"));
-                    $species->setNotes(empty($request->get("notes")) ? NULL : $request->get("notes"));
-                    $species->setConservationState(empty($request->get("conservationState")) ? 
-                                NULL : $request->get("conservationState"));
-
-                    $entityManager->flush();
-
-                    return new JsonResponse(["authorized" => true, "response" => true]);
-
+                if($species){
+                    throw new \Doctrine\DBAL\DBALException($translator->trans('exception_duplicate_entry'));
                 }
+
+                $species->setScientificName($request->get("scientificName"));
+                $species->setNotes(empty($request->get("notes")) ? NULL : $request->get("notes"));
+                $species->setConservationState(empty($request->get("conservationState")) ? 
+                            NULL : $request->get("conservationState"));
+
+                $entityManager->flush();
+
+                return new JsonResponse(["authorized" => true, "status" => true]);
+
+            }else{
+                return new JsonResponse(["authorized" => false]); 
             }
-        }catch(\TypeError |  \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\DBAL\Exception\InvalidArgumentException | \Doctrine\ORM\ORMException $ex){
-            return new JsonResponse(["exception" => $ex->getmessage()]);
+        }catch(\TypeError | \Doctrine\ORM\ORMException | \Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse([
+                        "authorized" => true,
+                        "status" => false,
+                        "message" => $ex->getMessage()
+                        ]);
         }
     }
 
