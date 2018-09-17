@@ -20,18 +20,10 @@ class SpeciesController extends AbstractController
             if($autenticate->verify($request->headers->get("authorizationCode"))){
 
 
-                if( empty($request->get("scientificName")) || is_null($request->get("scientificName")) ){
-                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('exception_type_error'));
-                }
-
-
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = $entityManager->getRepository(Species::class)
                             ->findByScientificName($request->get("scientificName"));
 
-                if($species){
-                    throw new \Doctrine\DBAL\DBALException($translator->trans('exception_duplicate_entry'));
-                }
 
                 $species = new Species();
                 $species->setScientificName($request->get("scientificName"));
@@ -50,15 +42,14 @@ class SpeciesController extends AbstractController
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
-        }catch(\Doctrine\DBAL\DBALException $ex){
-            return new JsonResponse([
-                        "authorized" => true,
-                        "status" => false,
-                        "message" => $ex->getMessage()
-                        ]);
-        }
-    }
 
+        }catch(\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex){
+            return new JsonResponse(["exception" => $translator->trans("exception_duplicate_entry")]);
+        }catch(\TypeError $ex){
+            return new JsonResponse(["exception" => $translator->trans("exception_type_error")]);
+        }
+
+    }
 
     public function search(Request $request, AutenticateHelper $autenticate)
     {
@@ -168,27 +159,24 @@ class SpeciesController extends AbstractController
                             ->find($request->get("id"));
 
                 if($species){
-                    throw new \Doctrine\DBAL\DBALException($translator->trans('exception_duplicate_entry'));
+
+                    $species->setScientificName($request->get("scientificName"));
+                    $species->setNotes(empty($request->get("notes")) ? NULL : $request->get("notes"));
+                    $species->setConservationState(empty($request->get("conservationState")) ? 
+                                NULL : $request->get("conservationState"));
+
+                    $entityManager->flush();
+
+                    return new JsonResponse(["authorized" => true, "status" => true]);
+
                 }
-
-                $species->setScientificName($request->get("scientificName"));
-                $species->setNotes(empty($request->get("notes")) ? NULL : $request->get("notes"));
-                $species->setConservationState(empty($request->get("conservationState")) ? 
-                            NULL : $request->get("conservationState"));
-
-                $entityManager->flush();
-
-                return new JsonResponse(["authorized" => true, "status" => true]);
-
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
-        }catch(\TypeError | \Doctrine\ORM\ORMException | \Doctrine\DBAL\DBALException $ex){
-            return new JsonResponse([
-                        "authorized" => true,
-                        "status" => false,
-                        "message" => $ex->getMessage()
-                        ]);
+        }catch(\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex){
+            return new JsonResponse(["exception" => $translator->trans("exception_duplicate_entry")]);
+        }catch(\TypeError | \Doctrine\ORM\ORMException $ex){
+            return new JsonResponse(["exception" => $translator->trans("exception_type_error")]);
         }
     }
 
