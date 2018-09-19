@@ -140,7 +140,7 @@ class UserController extends Controller
                         "text/html"
                 );
 
-                $mailer->send($message);
+                //$mailer->send($message);
 
                 return new JsonResponse(["authorized" => true, "response" => true ]);
             }
