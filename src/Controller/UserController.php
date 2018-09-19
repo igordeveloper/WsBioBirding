@@ -124,8 +124,8 @@ class UserController extends Controller
                 $password = bin2hex(random_bytes(5));
                 $user->setPassword(hash("sha256", $password));
 
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->flush();
+                //$entityManager = $this->getDoctrine()->getManager();
+                //$entityManager->flush();
 
                 $message = (new \Swift_Message("BioBirding"))
                     ->setFrom("igor.kusmitsch@gmail.com")
