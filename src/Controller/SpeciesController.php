@@ -19,11 +19,13 @@ class SpeciesController extends AbstractController
         try{
             if($autenticate->verify($request->headers->get("authorizationCode"))){
 
+                if(empty($request->get("scientificName")) OR $request->get("scientificName") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans("scientificNameNull"));
+                }
 
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = $entityManager->getRepository(Species::class)
                             ->findByScientificName($request->get("scientificName"));
-
 
                 $species = new Species();
                 $species->setScientificName($request->get("scientificName"));
@@ -42,16 +44,17 @@ class SpeciesController extends AbstractController
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
-
+        }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
         }catch(\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex){
-            return new JsonResponse(["exception" => $translator->trans("exception_duplicate_entry")]);
-        }catch(\TypeError $ex){
-            return new JsonResponse(["exception" => $translator->trans("exception_type_error")]);
+            return new JsonResponse(["exception" => $translator->trans("species_duplicate_entry")]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
         }
-
     }
 
-    public function search(Request $request, AutenticateHelper $autenticate)
+
+    public function search(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
@@ -76,16 +79,14 @@ class SpeciesController extends AbstractController
                 return new JsonResponse(["authorized" => false]); 
             }
         }catch(\TypeError $ex){
-            return new JsonResponse([
-                        "authorized" => true,
-                        "status" => false,
-                        "message" => $ex->getMessage()
-                        ]);
+            return new JsonResponse(["exception" => $translator->trans("scientificNameNull")]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
         }
     }
 
 
-    public function select(Request $request, AutenticateHelper $autenticate)
+    public function select(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
@@ -100,26 +101,27 @@ class SpeciesController extends AbstractController
                         "notes" => empty($species->getNotes()) ? "" : $species->getNotes(),
                         "conservationState" => empty($species->getConservationState()) ? "" :
                                                 $species->getConservationState(),
-                    );  
+                    );
                 }else{
-                    $list = NULL;
+                    throw new \Doctrine\ORM\ORMException($translator->trans("invalid_specie"));
+                    
                 }
 
                 return new JsonResponse(["authorized" => true , "species" => $list]);
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
-        }catch(\TypeError | \Doctrine\ORM\ORMException $ex){
-            return new JsonResponse([
-                        "authorized" => true,
-                        "status" => false,
-                        "message" => $ex->getMessage()
-                        ]);
+        }catch(\TypeError $ex){
+            return new JsonResponse(["exception" => $translator->trans("exception_type_error")]);
+        }catch(\Doctrine\ORM\ORMException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
         }
     }
 
 
-    public function selectAll(Request $request, AutenticateHelper $autenticate)
+    public function selectAll(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
@@ -142,8 +144,8 @@ class SpeciesController extends AbstractController
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
-        }catch(\TypeError $ex){
-            return new JsonResponse(["exception" => $ex->getmessage()]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
         }
     }
 
@@ -154,11 +156,19 @@ class SpeciesController extends AbstractController
         try{
             if($autenticate->verify($request->headers->get("authorizationCode"))){
 
+                if(empty($request->get("id")) OR $request->get("id") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans("idSpecieNull"));
+                }
+
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = $entityManager->getRepository(Species::class)
                             ->find($request->get("id"));
 
                 if($species){
+
+                    if(empty($request->get("scientificName")) OR $request->get("scientificName") == NULL){
+                        throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans("scientificNameNull"));
+                    }
 
                     $species->setScientificName($request->get("scientificName"));
                     $species->setNotes(empty($request->get("notes")) ? NULL : $request->get("notes"));
@@ -169,14 +179,19 @@ class SpeciesController extends AbstractController
 
                     return new JsonResponse(["authorized" => true, "status" => true]);
 
-                }
+                }else{
+                    throw new \Doctrine\ORM\ORMException($translator->trans("invalid_identifier"));
+                    
+                }   
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
+        }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
         }catch(\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex){
-            return new JsonResponse(["exception" => $translator->trans("exception_duplicate_entry")]);
-        }catch(\TypeError | \Doctrine\ORM\ORMException $ex){
-            return new JsonResponse(["exception" => $translator->trans("exception_type_error")]);
+            return new JsonResponse(["exception" => $translator->trans("species_duplicate_entry")]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
         }
     }
 
