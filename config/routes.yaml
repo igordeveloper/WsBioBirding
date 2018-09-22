@@ -35,6 +35,11 @@ popularName_selectAll:
     controller: App\Controller\PopularNameController::selectAll
     methods: [POST, HEAD, GET]
 
+popularName_selectAllFromSpecies:
+    path: popularName/selectAllFromSpecies
+    controller: App\Controller\PopularNameController::selectAllFromSpecies
+    methods: [POST, HEAD, GET]
+
 popularName_select:
     path: popularName/select
     controller: App\Controller\PopularNameController::select
