@@ -19,8 +19,22 @@ class PopularNameController extends Controller
 
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
+
+                if(empty($request->get("species")) OR $request->get("species") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[species] " . $translator->trans("nullArguments"));
+                }
+
+                if(empty($request->get("name")) OR $request->get("name") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[name] " . $translator->trans("nullArguments"));
+                }               
+
                 $entityManager = $this->getDoctrine()->getManager();
                 $species = $entityManager->getRepository(Species::class)->find($request->get('species'));
+
+
+                if(!$species){
+                    throw new \Doctrine\ORM\ORMInvalidArgumentException($translator->trans("invalid_specie"));
+                }
 
                 $popularName = new PopularName();
                 $popularName->setSpecies($species);
@@ -30,37 +44,58 @@ class PopularNameController extends Controller
                 $entityManager->persist($popularName);
 
                 $entityManager->flush();
-                return new JsonResponse(['authorized' => true, 'response' => $translator->trans('insert')]);
+
+                return new JsonResponse([
+                            "authorized" => true,
+                            "status" => true
+                            ]);
             }else{
-                return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
+                return new JsonResponse(["authorized" => false]); 
             }
-        }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException |  \Doctrine\ORM\ORMException $ex){
-            return new JsonResponse(['exception' => $ex->getmessage()]);
+        }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\ORM\ORMInvalidArgumentException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex){
+            return new JsonResponse(["exception" => $translator->trans("popular_duplicate_entry")]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
         }
     }
 
 
-    public function selectAll(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    public function selectAllFromSpecies(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
 
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
+
+                if(empty($request->get("species")) OR $request->get("species") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[species] " . $translator->trans("nullArguments"));
+                }
+
                 $popularName = $this->getDoctrine()->getRepository(PopularName::class)->findBy(['species' => $request->get('species')]);
 
 
                 $lista = array();
                 foreach ($popularName as $name) {
                     $lista[] = array(
-                                    'species' => $name->getSpecies()->getScientificName(), 
+                                    'species' => $name->getSpecies()->getId(), 
                                     'name' => $name->getName()
                                     );         
                 }
-                return new JsonResponse(['authorized' => true , 'response' => $lista]);
+                return new JsonResponse([
+                                'authorized' => true ,
+                                'popularNames' => $lista
+                                ]);
             }else{
-                return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
+                return new JsonResponse(["authorized" => false]); 
             }
-        }catch(\TypeError $ex){
-            return new JsonResponse(['exception' => $ex->getmessage()]);
+
+        }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
         }
     }
 
@@ -70,24 +105,71 @@ class PopularNameController extends Controller
 
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
-                $popularName = $this->getDoctrine()->getRepository(PopularName::class)->find(['species' => $request->get('species'), 'name' => $request->get('name')]);
+
+                if(empty($request->get("species")) OR $request->get("species") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[species] " . $translator->trans("nullArguments"));
+                }
+
+                if(empty($request->get("name")) OR $request->get("name") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[name] " . $translator->trans("nullArguments"));
+                } 
+
+                $popularName = $this->getDoctrine()->getRepository(PopularName::class)
+                                ->find(['species' => $request->get('species'), 'name' => $request->get('name')]);
 
 
                 if($popularName){
                     $lista = array(
-                            'species' => $popularName->getSpecies()->getScientificName(), 
+                            'species' => $popularName->getSpecies()->getId(), 
                             'name' => $popularName->getName(),
                             );  
                 }else{
-                    $lista = NULL;
+                    throw new \Doctrine\ORM\ORMException($translator->trans("invalid_popularName"));   
                 }
 
-                return new JsonResponse(['status' => $translator->trans('success'), 'response' => $lista]);
+                return new JsonResponse([
+                                'authorized' => true,
+                                'popularName' => $lista
+                                ]);
             }else{
-                return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
+                return new JsonResponse(["authorized" => false]); 
+
             }
-        }catch(\TypeError $ex){
-            return new JsonResponse(['exception' => $ex->getmessage()]);
+        }catch(\Doctrine\ORM\ORMException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
+        }
+    }
+
+
+    public function selectAll(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    {
+
+        try{
+            if($autenticate->verify($request->headers->get("authorizationCode"))){
+
+                $popularNames = $this->getDoctrine()->getRepository(PopularName::class)
+                            ->findAll();
+
+                $list = array();
+
+                foreach ($popularNames as $popularName) {
+
+                    $list[] = array(
+                                'species' => $popularName->getSpecies()->getId(), 
+                                'name' => $popularName->getName(),
+                                );         
+                }
+
+                return new JsonResponse(["authorized" => true , "popularNames" => $list]);
+            }else{
+                return new JsonResponse(["authorized" => false]); 
+            }
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
         }
     }
 
@@ -97,6 +179,20 @@ class PopularNameController extends Controller
 
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
+
+                if(empty($request->get("species")) OR $request->get("species") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[species] " . $translator->trans("nullArguments"));
+                }
+
+                if(empty($request->get("name")) OR $request->get("name") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[name] " . $translator->trans("nullArguments"));
+                } 
+
+                if(empty($request->get("newName")) OR $request->get("newName") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[newName] " . $translator->trans("nullArguments"));
+                } 
+
+
                 $entityManager = $this->getDoctrine()->getManager();
                 $popularName = $entityManager->getRepository(PopularName::class)
                                 ->findOneBy([
@@ -109,13 +205,21 @@ class PopularNameController extends Controller
                 }else{
                     $popularName->setName($request->get('newName'));
                     $entityManager->flush();
-                    return new JsonResponse(['authorized' => true, 'response' => $translator->trans('update')]);
+
+                    return new JsonResponse([
+                                    'authorized' => true ,
+                                    'status' => true
+                                    ]);
                 }
             }else{
-                return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
+                return new JsonResponse(['authorized' => false]); 
             }
+        }catch(\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex){
+            return new JsonResponse(["exception" => $translator->trans("popularName_duplicate_entry")]);
         }catch(\TypeError | \Doctrine\DBAL\Exception\InvalidArgumentException | \Doctrine\ORM\ORMException $ex){
             return new JsonResponse(['exception' => $ex->getmessage()]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
         }
     }
 
@@ -125,6 +229,17 @@ class PopularNameController extends Controller
 
         try{
             if($autenticate->verify($request->headers->get('authorizationCode'))){
+            
+
+                if(empty($request->get("species")) OR $request->get("species") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[species] " . $translator->trans("nullArguments"));
+                }
+
+                if(empty($request->get("name")) OR $request->get("name") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[name] " . $translator->trans("nullArguments"));
+                } 
+
+
                 $entityManager = $this->getDoctrine()->getManager();
                 $popularName = $entityManager->getRepository(PopularName::class)
                                 ->findOneBy([
@@ -133,17 +248,24 @@ class PopularNameController extends Controller
                                 ]);
 
                 if(!$popularName) {
-                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans('not_found'));
+                    throw new \Doctrine\ORM\ORMException($translator->trans("invalid_popularName"));
                 }else{
                     $entityManager->remove($popularName);
                     $entityManager->flush();
-                    return new JsonResponse(['authorized' => true, 'response' => $translator->trans('delete')]);
+                    return new JsonResponse([
+                                    'authorized' => true,
+                                    'status' => true
+                                    ]);
                 }
             }else{
-                return new JsonResponse(['authorized' => false, 'response' => $translator->trans('not_authorized')]); 
+                return new JsonResponse(['authorized' => false]); 
             }
-        }catch(\TypeError | \Doctrine\DBAL\Exception\InvalidArgumentException | \Doctrine\ORM\ORMException $ex){
+        }catch(\TypeError | \Doctrine\DBAL\Exception\InvalidArgumentException $ex){
             return new JsonResponse(['exception' => $ex->getmessage()]);
+        }catch(\Doctrine\ORM\ORMException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
         }
     }
 
