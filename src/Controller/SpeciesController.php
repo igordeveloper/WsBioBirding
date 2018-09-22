@@ -20,7 +20,7 @@ class SpeciesController extends AbstractController
             if($autenticate->verify($request->headers->get("authorizationCode"))){
 
                 if(empty($request->get("scientificName")) OR $request->get("scientificName") == NULL){
-                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans("scientificNameNull"));
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[scientificName] " . $translator->trans("nullArguments"));
                 }
 
                 $entityManager = $this->getDoctrine()->getManager();
@@ -79,7 +79,7 @@ class SpeciesController extends AbstractController
                 return new JsonResponse(["authorized" => false]); 
             }
         }catch(\TypeError $ex){
-            return new JsonResponse(["exception" => $translator->trans("scientificNameNull")]);
+            return new JsonResponse(["exception" => "[scientificName] " . $translator->trans("nullArguments")]);
         }catch(\Doctrine\DBAL\DBALException $ex){
             return new JsonResponse(["exception" => $translator->trans("DBALException")]);
         }
@@ -91,6 +91,10 @@ class SpeciesController extends AbstractController
 
         try{
             if($autenticate->verify($request->headers->get("authorizationCode"))){
+
+                if(empty($request->get("id")) OR $request->get("id") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[id] " . $translator->trans("nullArguments"));
+                }
 
                 $species = $this->getDoctrine()->getRepository(Species::class)
                             ->find($request->get("id"));
@@ -111,6 +115,8 @@ class SpeciesController extends AbstractController
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
+        }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
         }catch(\TypeError $ex){
             return new JsonResponse(["exception" => $translator->trans("exception_type_error")]);
         }catch(\Doctrine\ORM\ORMException $ex){
@@ -157,7 +163,7 @@ class SpeciesController extends AbstractController
             if($autenticate->verify($request->headers->get("authorizationCode"))){
 
                 if(empty($request->get("id")) OR $request->get("id") == NULL){
-                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans("idSpecieNull"));
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[id] " . $translator->trans("nullArguments"));
                 }
 
                 $entityManager = $this->getDoctrine()->getManager();
@@ -167,7 +173,7 @@ class SpeciesController extends AbstractController
                 if($species){
 
                     if(empty($request->get("scientificName")) OR $request->get("scientificName") == NULL){
-                        throw new \Doctrine\DBAL\Exception\InvalidArgumentException($translator->trans("scientificNameNull"));
+                        throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[scientificName] " . $translator->trans("nullArguments"));
                     }
 
                     $species->setScientificName($request->get("scientificName"));
