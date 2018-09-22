@@ -15,9 +15,19 @@ invalidEmail: O e-mail informado não esta cadastrado.
 
 
 species_duplicate_entry: Espécie duplicada. Esta espécie já esta cadastrada na base de dados.
+popularName_duplicate_entry: Nome popular duplicado. Esta nome já esta cadastrada na base de dados.
+
 exception_type_error: invalid_identifier
 
 scientificNameNull: Nome científico não pode ser nulo ou vazio.
-idSpecieNull: ID da espécie não pode ser nulo ou vazio.
 DBALException: Falha ao acessar o banco de dados.
+
+
+
+
+
+nullArguments: Não pode ser nulo ou vazio.
+
+
 invalid_specie: Espécie não encontrada.
+invalid_popularName: Espécie e nome popular nao encontrado.
