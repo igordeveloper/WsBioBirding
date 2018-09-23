@@ -90,8 +90,10 @@ class UserController extends Controller
         
         try{
         
-            if($autenticate->verify($request->headers->get("authorizationCode"))){
+            $user = $this->getDoctrine()->getRepository(User::class)
+                ->findByEmailOrNickName($request->headers->get("nickname"), $request->headers->get("password"));
 
+            if($user){  
 
                 if(empty($request->headers->get("newPassword")) OR $request->headers->get("newPassword") == NULL){
                     throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[newPassword] " . $translator->trans("nullArguments"));
@@ -107,7 +109,7 @@ class UserController extends Controller
                     throw new \Doctrine\ORM\ORMException($translator->trans("invalid_user"));
                 }else{
                     
-                    $user->setStatus($request->headers->get("newPassword"));
+                    $user->setPassword($request->headers->get("newPassword"));
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->flush();
 
