@@ -107,12 +107,14 @@ class UserController extends Controller
                     throw new \Doctrine\ORM\ORMException($translator->trans("invalid_user"));
                 }else{
                     
-                    $user->setPassword($request->get("newPassword"));
+                    $user->setStatus($request->headers->get("newPassword"));
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->flush();
 
                     return new JsonResponse(["authorized" => true, "response" => true]);
                 }
+            }else{
+                return new JsonResponse(["authorized" => false]);
             }
         }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
             return new JsonResponse(["exception" => $ex->getMessage()]);
