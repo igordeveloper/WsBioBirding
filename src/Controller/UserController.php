@@ -113,7 +113,7 @@ class UserController extends Controller
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->flush();
 
-                    return new JsonResponse(["authorized" => true, "response" => true]);
+                    return new JsonResponse(["authorized" => true, "status" => true]);
                 }
             }else{
                 return new JsonResponse(["authorized" => false]);
