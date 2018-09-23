@@ -9,6 +9,7 @@ use App\Helper\AutenticateHelper;
 use App\Entity\User;
 use App\Entity\AccessLevel;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
+use Symfony\Component\Translation\TranslatorInterface;
 
 
 class UserController extends Controller
@@ -84,29 +85,43 @@ class UserController extends Controller
     }
 
 
-    public function updateStatus(Request $request, AutenticateHelper $autenticate)
+    public function updatePassword(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
         
         try{
+        
             if($autenticate->verify($request->headers->get("authorizationCode"))){
+
+
+                if(empty($request->headers->get("newPassword")) OR $request->headers->get("newPassword") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[newPassword] " . $translator->trans("nullArguments"));
+                }
+
+                if(empty($request->get("rg")) OR $request->get("rg") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[rg] " . $translator->trans("nullArguments"));
+                }
 
                 $user = $this->getDoctrine()->getRepository(User::class)->findByRg($request->get("rg"));
 
                 if(!$user){
-                    return new JsonResponse(["authorized" => false]); 
+                    throw new \Doctrine\ORM\ORMException($translator->trans("invalid_user"));
                 }else{
                     
-                    $user->setStatus($request->get("status"));
-
+                    $user->setPassword($request->get("newPassword"));
                     $entityManager = $this->getDoctrine()->getManager();
                     $entityManager->flush();
 
                     return new JsonResponse(["authorized" => true, "response" => true]);
                 }
-                
             }
-        }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\DBAL\Exception\InvalidArgumentException$ex){
-            return new JsonResponse(["exception" => $ex->getmessage()]);
+        }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\TypeError $ex){
+            return new JsonResponse(["exception" => $translator->trans("exception_type_error")]);
+        }catch(\Doctrine\ORM\ORMException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
         }
 
     }
