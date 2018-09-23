@@ -116,8 +116,6 @@ class UserController extends Controller
             }
         }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
             return new JsonResponse(["exception" => $ex->getMessage()]);
-        }catch(\TypeError $ex){
-            return new JsonResponse(["exception" => $translator->trans("exception_type_error")]);
         }catch(\Doctrine\ORM\ORMException $ex){
             return new JsonResponse(["exception" => $ex->getMessage()]);
         }catch(\Doctrine\DBAL\DBALException $ex){
