@@ -22,12 +22,8 @@ exception_type_error: invalid_identifier
 scientificNameNull: Nome científico não pode ser nulo ou vazio.
 DBALException: Falha ao acessar o banco de dados.
 
-
-
-
-
 nullArguments: Não pode ser nulo ou vazio.
 
-
+invalid_user: Usuário não encontrado.
 invalid_specie: Espécie não encontrada.
 invalid_popularName: Espécie e nome popular nao encontrado.
