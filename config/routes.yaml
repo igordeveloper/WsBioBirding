@@ -66,9 +66,9 @@ user_validate:
     controller: App\Controller\UserController::validate
     methods: [HEAD, GET, POST]
 
-user_update_status:
-    path: user/updateStatus
-    controller: App\Controller\UserController::updateStatus
+user_update_password:
+    path: user/updatePassword
+    controller: App\Controller\UserController::updatePassword
     methods: [HEAD, GET, POST]
 
 user_recover_password:
