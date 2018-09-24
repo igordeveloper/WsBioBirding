@@ -128,7 +128,7 @@ class UserController extends Controller
 
     }
 
-    public function recoverPassword(Request $request, \Swift_Mailer $mailer)
+    public function recoverPassword(Request $request, \Swift_Mailer $mailer, TranslatorInterface $translator)
     {
         
         try{
