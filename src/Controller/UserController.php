@@ -159,7 +159,7 @@ class UserController extends Controller
 
                 $mailer->send($message);
 
-                return new JsonResponse(["authorized" => true, "response" => true ]);
+                return new JsonResponse(["authorized" => true, "status" => true ]);
             }
         }catch(\TypeError | \Doctrine\DBAL\Exception\UniqueConstraintViolationException | \Doctrine\DBAL\Exception\InvalidArgumentException$ex){
             return new JsonResponse(["exception" => $ex->getmessage()]);
