@@ -23,7 +23,7 @@ class UserRepository extends ServiceEntityRepository
     /**
      * @return User Returns a User object
      */
-    public function findByrg(string $value, string $password)
+    public function checkToken(string $value, string $password)
     {
         return $this->createQueryBuilder('u')
             ->where('u.rg = :value')
