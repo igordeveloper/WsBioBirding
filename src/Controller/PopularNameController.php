@@ -161,6 +161,7 @@ class PopularNameController extends Controller
                     $list[] = array(
                                 'species' => $popularName->getSpecies()->getId(), 
                                 'name' => $popularName->getName(),
+                                'scientificName' => $popularName->getSpecies()->getScientificName(),
                                 );         
                 }
 
