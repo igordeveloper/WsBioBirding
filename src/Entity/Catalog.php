@@ -29,12 +29,12 @@ class Catalog
     private $species;
 
     /**
-     * @ORM\Column(type="string", length=7)
+     * @ORM\Column(type="string", length=15)
      */
     private $age;
 
     /**
-     * @ORM\Column(type="string", length=13)
+     * @ORM\Column(type="string", length=15)
      */
     private $sex;
 
