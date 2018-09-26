@@ -5,20 +5,31 @@ namespace App\Helper;
 class WeatherHelper
 {
 
-    private $secretKeyDarkSky = "8987f4fc7f91d7ecd89cf9df78444281";
-    private $url = "https://api.darksky.net";
+    private $secretKeyDarkSky;
 
-    public function check(/*float $latitude, float $longitude, int $timestamp*/): bool
+    public function __construct(){
+        $this->secretKeyDarkSky = $_SERVER['KEY_DARK_SKY'];
+    }
+
+    public function check(float $latitude, float $longitude, float $timestamp): array
     {
+
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, 'https://api.darksky.net/forecast/8987f4fc7f91d7ecd89cf9df78444281/-23.177249,%20-46.768430,1535315835?exclude=hourly,%20flags,alerts&lang=pt&units=si');
+        curl_setopt($ch, CURLOPT_URL, "https://api.darksky.net/forecast/".$this->secretKeyDarkSky."/".$latitude.",".$longitude.",".$timestamp."?exclude=hourly,%20flags,alerts&lang=pt&units=ca");
         $result=curl_exec($ch);
         curl_close($ch);
 
-        var_dump(json_decode($result, true));
-        return true;
+        $response = json_decode($result, true);
+
+        $array = [];
+        $array['weather'] = $response['currently']['summary'];
+        $array['temperature'] = $response['currently']['temperature'];
+        $array['windSpeed'] = $response['currently']['windSpeed'];
+        $array['humidity'] = $response['currently']['humidity'] * 100;
+
+        return $array;
 
     }
 }
