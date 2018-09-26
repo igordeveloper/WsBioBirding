@@ -77,4 +77,10 @@ user_recover_password:
     methods: [HEAD, GET, POST]
 
 
+catalog_insert:
+    path: catalog/insert
+    controller: App\Controller\CatalogController::insert
+    methods: [HEAD, GET, POST]
+
+
 
