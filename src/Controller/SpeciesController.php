@@ -23,10 +23,6 @@ class SpeciesController extends AbstractController
                     throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[scientificName] " . $translator->trans("nullArguments"));
                 }
 
-                $entityManager = $this->getDoctrine()->getManager();
-                $species = $entityManager->getRepository(Species::class)
-                            ->findByScientificName($request->get("scientificName"));
-
                 $species = new Species();
                 $species->setScientificName($request->get("scientificName"));
                 $species->setNotes(empty($request->get("notes")) ? NULL : $request->get("notes"));
