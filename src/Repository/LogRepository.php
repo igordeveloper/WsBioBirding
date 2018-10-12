@@ -19,22 +19,22 @@ class LogRepository extends ServiceEntityRepository
         parent::__construct($registry, Log::class);
     }
 
-//    /**
-//     * @return Log[] Returns an array of Log objects
-//     */
-    /*
-    public function findByExampleField($value)
+    /**
+     * @return Log[] Returns an array of Log objects
+     */
+    
+    public function findLastSpeciesUpdate($value)
     {
         return $this->createQueryBuilder('l')
-            ->andWhere('l.exampleField = :val')
+            ->andWhere('l.action = :val')
             ->setParameter('val', $value)
-            ->orderBy('l.id', 'ASC')
-            ->setMaxResults(10)
+            ->orderBy('l.id', 'DESC')
+            ->setMaxResults(1)
             ->getQuery()
-            ->getResult()
+            ->getOneOrNullResult();
         ;
     }
-    */
+
 
     /*
     public function findOneBySomeField($value): ?Log
