@@ -6,6 +6,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use App\Entity\Species;
+use App\Entity\Log;
 use App\Helper\AutenticateHelper;
 use App\Helper\WeatherHelper;
 use Symfony\Component\Translation\TranslatorInterface;
@@ -31,6 +32,12 @@ class SpeciesController extends AbstractController
 
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($species);
+                $entityManager->flush();
+
+                $log = new Log();
+                $log->setAction('species');
+                $log->setTimestamp(time());
+                $entityManager->persist($log);
                 $entityManager->flush();
 
                 return new JsonResponse([
@@ -177,6 +184,12 @@ class SpeciesController extends AbstractController
                     $species->setConservationState(empty($request->get("conservationState")) ? 
                                 NULL : $request->get("conservationState"));
 
+                    $entityManager->flush();
+
+                    $log = new Log();
+                    $log->setAction('species');
+                    $log->setTimestamp(time());
+                    $entityManager->persist($log);
                     $entityManager->flush();
 
                     return new JsonResponse(["authorized" => true, "status" => true]);
