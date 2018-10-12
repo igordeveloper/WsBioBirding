@@ -8,6 +8,7 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Helper\AutenticateHelper;
 use App\Entity\PopularName;
 use App\Entity\Species;
+use App\Entity\Log;
 use Symfony\Component\Translation\TranslatorInterface;
 
 
@@ -42,8 +43,15 @@ class PopularNameController extends Controller
 
                 $entityManager->persist($species);
                 $entityManager->persist($popularName);
-
                 $entityManager->flush();
+
+
+                $log = new Log();
+                $log->setAction('species');
+                $log->setTimestamp(time());
+                $entityManager->persist($log);
+                $entityManager->flush();
+
 
                 return new JsonResponse([
                             "authorized" => true,
@@ -207,6 +215,12 @@ class PopularNameController extends Controller
                     $popularName->setName($request->get('newName'));
                     $entityManager->flush();
 
+                    $log = new Log();
+                    $log->setAction('species');
+                    $log->setTimestamp(time());
+                    $entityManager->persist($log);
+                    $entityManager->flush();
+
                     return new JsonResponse([
                                     'authorized' => true ,
                                     'status' => true
@@ -253,6 +267,13 @@ class PopularNameController extends Controller
                 }else{
                     $entityManager->remove($popularName);
                     $entityManager->flush();
+
+                    $log = new Log();
+                    $log->setAction('species');
+                    $log->setTimestamp(time());
+                    $entityManager->persist($log);
+                    $entityManager->flush();
+
                     return new JsonResponse([
                                     'authorized' => true,
                                     'status' => true
