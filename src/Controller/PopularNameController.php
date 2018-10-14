@@ -173,7 +173,7 @@ class PopularNameController extends Controller
                                 );         
                 }
 
-                return new JsonResponse(["authorized" => true , "popularNames" => $list]);
+                return new JsonResponse(["authorized" => true , "count" => count($popularNames), "popularNames" => $list]);
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
