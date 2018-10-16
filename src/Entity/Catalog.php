@@ -10,19 +10,19 @@ use Doctrine\ORM\Mapping as ORM;
 class Catalog
 {
     /**
-     * @ORM\Column(type="integer", columnDefinition="INT AUTO_INCREMENT UNIQUE")
+     * @ORM\Id()
+     * @ORM\GeneratedValue()
+     * @ORM\Column(type="integer")
      */
     private $id;
 
     /**
-     * @ORM\Id()
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false, referencedColumnName="rg", name="rg")
      */
     private $user;
 
     /**
-     * @ORM\Id()
      * @ORM\ManyToOne(targetEntity="App\Entity\Species")
      * @ORM\JoinColumn(nullable=false, referencedColumnName="id", name="species")
      */
@@ -74,9 +74,8 @@ class Catalog
     private $notes;
 
     /**
-     * @ORM\Id()
      * @ORM\Column(type="datetime")
-     */ 
+     */
     private $date;
 
     /**
@@ -84,16 +83,24 @@ class Catalog
      */
     private $identificationCode;
 
+    /**
+     * @ORM\Column(type="string", length=150, nullable=true)
+     */
+    private $neighborhood;
+
+    /**
+     * @ORM\Column(type="string", length=150, nullable=true)
+     */
+    private $city;
+
+    /**
+     * @ORM\Column(type="string", length=20, nullable=true)
+     */
+    private $state;
+
     public function getId(): ?int
     {
         return $this->id;
-    }
-
-    public function setId(int $id): self
-    {
-        $this->id = $id;
-
-        return $this;
     }
 
     public function getAge(): ?string
@@ -228,6 +235,42 @@ class Catalog
         return $this;
     }
 
+    public function getNeighborhood(): ?string
+    {
+        return $this->neighborhood;
+    }
+
+    public function setNeighborhood(?string $neighborhood): self
+    {
+        $this->neighborhood = $neighborhood;
+
+        return $this;
+    }
+
+    public function getCity(): ?string
+    {
+        return $this->city;
+    }
+
+    public function setCity(?string $city): self
+    {
+        $this->city = $city;
+
+        return $this;
+    }
+
+    public function getState(): ?string
+    {
+        return $this->state;
+    }
+
+    public function setState(?string $state): self
+    {
+        $this->state = $state;
+
+        return $this;
+    }
+
     public function getUser(): ?User
     {
         return $this->user;
@@ -251,8 +294,4 @@ class Catalog
 
         return $this;
     }
-
-   
-
-    
 }
