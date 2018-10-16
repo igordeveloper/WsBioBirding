@@ -10,19 +10,19 @@ use Doctrine\ORM\Mapping as ORM;
 class Catalog
 {
     /**
-     * @ORM\Id()
-     * @ORM\GeneratedValue()
-     * @ORM\Column(type="integer")
+     * @ORM\Column(type="integer", columnDefinition="INT AUTO_INCREMENT UNIQUE")
      */
     private $id;
 
     /**
+     * @ORM\Id()
      * @ORM\ManyToOne(targetEntity="App\Entity\User")
      * @ORM\JoinColumn(nullable=false, referencedColumnName="rg", name="rg")
      */
     private $user;
 
     /**
+     * @ORM\Id()
      * @ORM\ManyToOne(targetEntity="App\Entity\Species")
      * @ORM\JoinColumn(nullable=false, referencedColumnName="id", name="species")
      */
@@ -74,8 +74,9 @@ class Catalog
     private $notes;
 
     /**
+     * @ORM\Id()
      * @ORM\Column(type="datetime")
-     */
+     */ 
     private $date;
 
     /**
@@ -88,26 +89,9 @@ class Catalog
         return $this->id;
     }
 
-    public function getUser(): ?User
+    public function setId(int $id): self
     {
-        return $this->user;
-    }
-
-    public function setUser(?User $user): self
-    {
-        $this->user = $user;
-
-        return $this;
-    }
-
-    public function getSpecies(): ?Species
-    {
-        return $this->species;
-    }
-
-    public function setSpecies(?Species $species): self
-    {
-        $this->species = $species;
+        $this->id = $id;
 
         return $this;
     }
@@ -136,60 +120,60 @@ class Catalog
         return $this;
     }
 
-    public function getLatitude(): ?float
+    public function getLatitude()
     {
         return $this->latitude;
     }
 
-    public function setLatitude(float $latitude): self
+    public function setLatitude($latitude): self
     {
         $this->latitude = $latitude;
 
         return $this;
     }
 
-    public function getLongitude(): ?float
+    public function getLongitude()
     {
         return $this->longitude;
     }
 
-    public function setLongitude(float $longitude): self
+    public function setLongitude($longitude): self
     {
         $this->longitude = $longitude;
 
         return $this;
     }
 
-    public function getTemperature(): ?float
+    public function getTemperature()
     {
         return $this->temperature;
     }
 
-    public function setTemperature(float $temperature): self
+    public function setTemperature($temperature): self
     {
         $this->temperature = $temperature;
 
         return $this;
     }
 
-    public function getHumidity(): ?float
+    public function getHumidity()
     {
         return $this->humidity;
     }
 
-    public function setHumidity(float $humidity): self
+    public function setHumidity($humidity): self
     {
         $this->humidity = $humidity;
 
         return $this;
     }
 
-    public function getWind(): ?float
+    public function getWind()
     {
         return $this->wind;
     }
 
-    public function setWind(float $wind): self
+    public function setWind($wind): self
     {
         $this->wind = $wind;
 
@@ -225,13 +209,6 @@ class Catalog
         return $this->date;
     }
 
-    public function setDate(\DateTimeInterface $date): self
-    {
-        $this->date = $date;
-
-        return $this;
-    }
-
     public function getIdentificationCode(): ?string
     {
         return $this->identificationCode;
@@ -243,4 +220,30 @@ class Catalog
 
         return $this;
     }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(?User $user): self
+    {
+        $this->user = $user;
+
+        return $this;
+    }
+
+    public function getSpecies(): ?Species
+    {
+        return $this->species;
+    }
+
+    public function setSpecies(?Species $species): self
+    {
+        $this->species = $species;
+
+        return $this;
+    }
+
+    
 }
