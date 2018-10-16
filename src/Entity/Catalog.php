@@ -209,6 +209,13 @@ class Catalog
         return $this->date;
     }
 
+    public function setDate(\DateTimeInterface $date): self
+    {
+        $this->date = $date;
+
+        return $this;
+    }
+
     public function getIdentificationCode(): ?string
     {
         return $this->identificationCode;
@@ -244,6 +251,8 @@ class Catalog
 
         return $this;
     }
+
+   
 
     
 }
