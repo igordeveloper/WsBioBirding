@@ -36,15 +36,24 @@ class CatalogRepository extends ServiceEntityRepository
     }
     */
 
-    /*
-    public function findOneBySomeField($value): ?Catalog
+    /**
+    * @return User Returns a User object
+    */
+    public function findCatalog($rg, $latitude, $longitude, $date): ?array
     {
         return $this->createQueryBuilder('c')
-            ->andWhere('c.exampleField = :val')
-            ->setParameter('val', $value)
+            ->select('count(c.id)')
+            ->andWhere('c.user = :rg')
+            ->andWhere('c.latitude = :latitude')
+            ->andWhere('c.longitude = :longitude')
+            ->andWhere('c.date = :date')
+            ->setParameter('rg', $rg)
+            ->setParameter('latitude', $latitude)
+            ->setParameter('longitude', $longitude)
+            ->setParameter('date', $date)       
             ->getQuery()
             ->getOneOrNullResult()
         ;
     }
-    */
+
 }
