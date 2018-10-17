@@ -82,6 +82,11 @@ catalog_insert:
     controller: App\Controller\CatalogController::insert
     methods: [HEAD, GET, POST]
 
+catalog_select_count:
+    path: catalog/selectCount
+    controller: App\Controller\CatalogController::selectCount
+    methods: [HEAD, GET, POST]    
+
 log_last_species_update:
     path: log/lastSpeciesUpdate
     controller: App\Controller\LogController::lastSpeciesUpdate
