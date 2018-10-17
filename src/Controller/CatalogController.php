@@ -79,4 +79,40 @@ class CatalogController extends Controller
             return new JsonResponse(["exception" => $ex->getMessage()]);
         }
     }
+
+
+    public function selectCount(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    {
+
+        try{
+            if($autenticate->verify($request->headers->get("authorizationCode"))){
+
+                $dateImmutable = new \DateTime();
+                $dateImmutable->setTimestamp($request->get("timestamp"));
+
+                $catalog = $this->getDoctrine()->getRepository(Catalog::class)
+                            ->findCatalog($request->get("rg"),
+                                        $request->get("latitude"),
+                                        $request->get("longitude"),
+                                        $dateImmutable);
+
+                if($catalog){
+                    return new JsonResponse(["authorized" => true , "count" => $catalog[1]]);
+                }else{
+                    return new JsonResponse(["authorized" => false]); 
+                }
+
+            }else{
+                
+            }
+        }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\TypeError $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\ORM\ORMException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
+        }
+    }
 }
