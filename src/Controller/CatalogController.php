@@ -7,6 +7,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use App\Helper\AutenticateHelper;
 use App\Helper\WeatherHelper;
+use App\Helper\LocationHelper;
 use App\Entity\Catalog;
 use App\Entity\User;
 use App\Entity\Species;
@@ -18,7 +19,7 @@ class CatalogController extends Controller
 {
 
 
-    public function insert(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    public function insert(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator, LocationHelper $locationHelper)
     {
 
         try{
@@ -28,11 +29,16 @@ class CatalogController extends Controller
                 $weatherHelper = new WeatherHelper();
                 $w = $weatherHelper->check($request->get("latitude"), $request->get("longitude"), $request->get("timestamp"));
 
+                $locationHelper = new LocationHelper();
+                $l = $locationHelper->check($request->get("latitude"), $request->get("longitude"));
+
                 $user = $this->getDoctrine()->getRepository(User::class)->find($request->get("rg"));
                 $species = $this->getDoctrine()->getRepository(Species::class)->find($request->get("species"));
 
                 $dateImmutable = new \DateTime();
                 $dateImmutable->setTimestamp($request->get("timestamp"));
+
+
                 $catalog = new Catalog();
                 $catalog->setUser($user);
                 $catalog->setSpecies($species);
@@ -47,6 +53,10 @@ class CatalogController extends Controller
                 $catalog->setDate($dateImmutable);
                 $catalog->setNotes(empty($request->get("notes")) ? NULL : $request->get("notes"));
                 $catalog->setIdentificationCode(empty($request->get("identificationCode")) ? NULL : $request->get("identificationCode"));
+                $catalog->setNeighborhood($l["neighborhood"]);
+                $catalog->setCity($l["city"]);
+                $catalog->setState($l["state"]);
+
 
                 $entityManager = $this->getDoctrine()->getManager();
                 $entityManager->persist($catalog);
