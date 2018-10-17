@@ -5,10 +5,10 @@ namespace App\Helper;
 class WeatherHelper
 {
 
-    private $secretKeyDarkSky;
+    private $key;
 
     public function __construct(){
-        $this->secretKeyDarkSky = $_SERVER['KEY_DARK_SKY'];
+        $this->key = $_SERVER['KEY_DARK_SKY'];
     }
 
     public function check(float $latitude, float $longitude, float $timestamp): array
@@ -17,7 +17,7 @@ class WeatherHelper
         $ch = \curl_init();
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
         curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($ch, CURLOPT_URL, "https://api.darksky.net/forecast/".$this->secretKeyDarkSky."/".$latitude.",".$longitude.",".$timestamp."?exclude=hourly,%20flags,alerts&lang=pt&units=ca");
+        curl_setopt($ch, CURLOPT_URL, "https://api.darksky.net/forecast/".$this->key."/".$latitude.",".$longitude.",".$timestamp."?exclude=hourly,%20flags,alerts&lang=pt&units=ca");
         $result=curl_exec($ch);
         curl_close($ch);
 
