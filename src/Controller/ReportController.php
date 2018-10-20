@@ -67,6 +67,7 @@ class ReportController extends Controller
                             $translator->trans("longitude"),
                             );
 
+                        fprintf($csvh, chr(0xEF).chr(0xBB).chr(0xBF));
                         fputcsv($csvh, $data);
 
                         foreach($records as $catalog) {
@@ -87,6 +88,7 @@ class ReportController extends Controller
                                 $catalog->getLatitude(),
                                 $catalog->getLongitude(),
                                 );
+                            fprintf($csvh, chr(0xEF).chr(0xBB).chr(0xBF));
                             fputcsv($csvh, $data);
                         }
 
