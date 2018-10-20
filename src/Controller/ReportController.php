@@ -10,6 +10,8 @@ use App\Entity\Catalog;
 use App\Entity\User;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Translation\TranslatorInterface;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class ReportController extends Controller
 {
@@ -45,58 +47,73 @@ class ReportController extends Controller
                     if($records){
 
 
-                        $file = "BioBirding Report - " . date('d_m_Y__h_i_s') . "_" . $user->getRg();
-                        $csvPath = "reports/".$file.".csv";
+                        $file = "BioBirding Report - " . date('d_m_Y__h_i_s') . "_" . $user->getRg() . ".xlsx";
 
-                        $csvh = fopen($csvPath, 'w');
-                        $data = array($translator->trans("biologist"),
-                            $translator->trans("species"),
-                            $translator->trans("age"),
-                            $translator->trans("sex"),
-                            $translator->trans("temperature"),
-                            $translator->trans("humidity"),
-                            $translator->trans("wind"),
-                            $translator->trans("weather"),
-                            $translator->trans("notes"),
-                            $translator->trans("date"),
-                            $translator->trans("identication_code"),
-                            $translator->trans("neighborhood"),
-                            $translator->trans("city"),
-                            $translator->trans("state"),
-                            $translator->trans("latitude"),
-                            $translator->trans("longitude"),
-                            );
+                        $spreadsheet = new Spreadsheet();
 
-                        fputcsv($csvh, $data);
+                        $c = 1;
+
+                        $spreadsheet->getActiveSheet()->getStyle('A1:P1')->getFill()
+                                    ->setFillType(\PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID)
+                                    ->getStartColor()->setRGB('004d8b');
+                        $spreadsheet->getActiveSheet()->getStyle('A1:P1')
+                                    ->getFont()->getColor()->setRGB('FFFFFF');       
+
+                        $sheet = $spreadsheet->getActiveSheet();
+                        $sheet->setCellValue("A1", $translator->trans("biologist"));
+                        $sheet->setCellValue("B1", $translator->trans("species"));
+                        $sheet->setCellValue("C1", $translator->trans("age"));
+                        $sheet->setCellValue("D1", $translator->trans("sex"));
+                        $sheet->setCellValue("E1", $translator->trans("temperature"));
+                        $sheet->setCellValue("F1", $translator->trans("humidity"));
+                        $sheet->setCellValue("G1", $translator->trans("wind"));
+                        $sheet->setCellValue("H1", $translator->trans("weather"));
+                        $sheet->setCellValue("I1", $translator->trans("notes"));
+                        $sheet->setCellValue("J1", $translator->trans("date"));
+                        $sheet->setCellValue("K1", $translator->trans("identication_code"));
+                        $sheet->setCellValue("L1", $translator->trans("neighborhood"));
+                        $sheet->setCellValue("M1", $translator->trans("city"));
+                        $sheet->setCellValue("N1", $translator->trans("state"));
+                        $sheet->setCellValue("O1", $translator->trans("latitude"));
+                        $sheet->setCellValue("P1", $translator->trans("longitude"));
+
+
+                        $r=2;
+
 
                         foreach($records as $catalog) {
-                            $data = array($catalog->getUser()->getFullName(),
-                                $catalog->getSpecies()->getScientificName(),
-                                $catalog->getAge(),
-                                $catalog->getSex(),
-                                $catalog->getTemperature(),
-                                $catalog->getHumidity(),
-                                $catalog->getWind(),
-                                $catalog->getWeather(),
-                                $catalog->getNotes(),
-                                date_format($catalog->getDate(), 'd/m/Y h:i:s'),
-                                $catalog->getIdentificationCode(),
-                                $catalog->getNeighborhood(),
-                                $catalog->getCity(),
-                                $catalog->getState(),
-                                $catalog->getLatitude(),
-                                $catalog->getLongitude(),
-                                );
-                            fputcsv($csvh, $data);
+
+                            $sheet->setCellValue("A".$r, $catalog->getUser()->getFullName());
+                            $sheet->setCellValue("B".$r, $catalog->getSpecies()->getScientificName());
+                            $sheet->setCellValue("C".$r, $catalog->getAge());
+                            $sheet->setCellValue("D".$r, $catalog->getSex());
+                            $sheet->setCellValue("E".$r, $catalog->getTemperature());
+                            $sheet->setCellValue("F".$r, $catalog->getHumidity());
+                            $sheet->setCellValue("G".$r, $catalog->getWind());
+                            $sheet->setCellValue("H".$r, $catalog->getWeather());
+                            $sheet->setCellValue("I".$r, $catalog->getNotes());
+                            $sheet->setCellValue("J".$r, date_format($catalog->getDate(), 'd/m/Y h:i:s'));
+                            $sheet->setCellValue("K".$r, $catalog->getIdentificationCode());
+                            $sheet->setCellValue("L".$r, $catalog->getNeighborhood());
+                            $sheet->setCellValue("M".$r, $catalog->getCity());
+                            $sheet->setCellValue("N".$r, $catalog->getState());
+                            $sheet->setCellValue("O".$r, $catalog->getLatitude());
+                            $sheet->setCellValue("P".$r, $catalog->getLongitude());
+                            $r++;
                         }
 
-                    fclose($csvh);
+                        $sheet->setTitle("BioBirding");
+
+                        $writer = new Xlsx($spreadsheet);
+                        $publicDirectory = $this->get("kernel")->getProjectDir() . "/public";
+                        $excelFilepath =  $publicDirectory . "/reports/".$file;
+                        $writer->save($excelFilepath);
 
                     }
 
 
                     $message = (new \Swift_Message("BioBirding"))
-                        ->attach(\ Swift_Attachment::fromPath($csvPath)->setFilename($file . ".csv"))
+                        ->attach(\ Swift_Attachment::fromPath($excelFilepath)->setFilename($file))
                         ->setFrom("igor.kusmitsch@gmail.com")
                         ->setTo($user->getEmail())
                         ->setBody(
@@ -107,7 +124,7 @@ class ReportController extends Controller
                     );
 
                     $mailer->send($message);
-                    //unlink($csvPath);
+                    //unlink($csvPath);*/
 
                     return new JsonResponse(["authorized" => true, "status" => true ]);
 
