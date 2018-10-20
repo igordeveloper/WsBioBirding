@@ -9,6 +9,7 @@ empty: não pode ser nulo
 not_authorized: não autorizado
 Hello: Olá
 msg_new_password: Segue abaixo sua nova senha de acesso. É aconselhável alterar a senha no primeiro acesso no menu editar perfil do aplicativo.
+msg_new_report: Segue anexo relatório de avistamentos.
 regards: Atenciosamente
 sendPassword: A nova senha foi enviada para o endereço  de e-mail informado
 invalidEmail: O e-mail informado não esta cadastrado.
@@ -27,3 +28,23 @@ nullArguments: Não pode ser nulo ou vazio.
 invalid_user: Usuário não encontrado.
 invalid_specie: Espécie não encontrada.
 invalid_popularName: Espécie e nome popular nao encontrado.
+
+
+
+biologist: Biólogo
+species: Espécie
+age: Idade
+sex: Sexo
+temperature: Temperatura (°C)
+humidity: Umidade (%)
+wind: Velocidade do vento (Km)
+weather: Condição do tempo
+notes: Anotações do biólogo
+date: Data do avistamento
+identication_code: Código de identificação da ave
+neighborhood: Bairro
+city: Cidade
+state: Estado
+latitude: Latitude
+long[tude: Longitude
+
