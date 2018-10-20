@@ -15,4 +15,4 @@
 src/Migrations
 
 
-public/reports/
+/public/reports/*
