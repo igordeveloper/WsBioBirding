@@ -92,6 +92,11 @@ log_last_species_update:
     controller: App\Controller\LogController::lastSpeciesUpdate
     methods: [HEAD, GET, POST]
 
+report_send:
+    path: report/send
+    controller: App\Controller\ReportController:send
+    methods: [HEAD, GET, POST]
+
 
 
 
