@@ -37,7 +37,7 @@ class CatalogRepository extends ServiceEntityRepository
     */
 
     /**
-    * @return User Returns a User object
+    * @return array[] Returns a array with select count
     */
     public function findCatalog($rg, $latitude, $longitude, $date): ?array
     {
@@ -53,6 +53,40 @@ class CatalogRepository extends ServiceEntityRepository
             ->setParameter('date', $date)       
             ->getQuery()
             ->getOneOrNullResult()
+        ;
+    }
+
+
+    /**
+    * @return Catalog[] Returns an array of Catalog objects
+    */
+    public function fullReport($startDate, $finishDate): ?array
+    {
+        return $this->createQueryBuilder('c')
+            ->andWhere('c.date BETWEEN :startDate AND :finishDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('finishDate', $finishDate)
+            ->orderBy('c.date', 'DESC')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
+
+    /**
+    * @return Catalog[] Returns an array of Catalog objects
+    */
+    public function report($startDate, $finishDate, $rg): ?array
+    {
+        return $this->createQueryBuilder('c')
+            ->where('c.user = :rg')
+            ->andWhere('c.date BETWEEN :startDate AND :finishDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('finishDate', $finishDate)
+            ->setParameter('rg', $rg)
+            ->orderBy('c.date', 'DESC')
+            ->getQuery()
+            ->getResult()
         ;
     }
 
