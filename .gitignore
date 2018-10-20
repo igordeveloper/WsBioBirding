@@ -13,3 +13,6 @@
 /.web-server-pid
 ###< symfony/web-server-bundle ###
 src/Migrations
+
+
+public/reports/
