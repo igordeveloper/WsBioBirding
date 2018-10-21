@@ -64,7 +64,7 @@ class Catalog
     private $wind;
 
     /**
-     * @ORM\Column(type="string", length=15)
+     * @ORM\Column(type="string", length=25)
      */
     private $weather;
 
