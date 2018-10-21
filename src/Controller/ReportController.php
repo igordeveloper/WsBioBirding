@@ -38,10 +38,14 @@ class ReportController extends Controller
                 }else{
                     
                     $accessLevel = $user->getAccessLevel()->getAccessLevel(); 
-                    if( $accessLevel== 5 || $accessLevel == 6){
-                        $records = $this->getDoctrine()->getRepository(Catalog::class)->fullReport($request->get("startDate"), $request->get("finishDate"));
+
+                    $startDate = $request->get("startDate") . " 00:00:00";
+                    $finishDate = $request->get("finishDate") . " 23:59:59";
+
+                    if( $accessLevel== 1 || $accessLevel == 2){
+                        $records = $this->getDoctrine()->getRepository(Catalog::class)->fullReport($startDate, $finishDate);
                     }else{
-                        $records = $this->getDoctrine()->getRepository(Catalog::class)->report($request->get("startDate"), $request->get("finishDate"),$request->get("rg"));
+                        $records = $this->getDoctrine()->getRepository(Catalog::class)->report($startDate, $finishDate,$request->get("rg"));
                     }
 
                     if($records){
@@ -109,10 +113,7 @@ class ReportController extends Controller
                         $excelFilepath =  $publicDirectory . "/reports/".$file;
                         $writer->save($excelFilepath);
 
-                    }
-
-
-                    $message = (new \Swift_Message("BioBirding"))
+                        $message = (new \Swift_Message("BioBirding"))
                         ->attach(\ Swift_Attachment::fromPath($excelFilepath)->setFilename($file))
                         ->setFrom("igor.kusmitsch@gmail.com")
                         ->setTo($user->getEmail())
@@ -121,15 +122,14 @@ class ReportController extends Controller
                                                 array("name" => $user->getFullName())
                             ),
                             "text/html"
-                    );
+                        );
 
-                    $mailer->send($message);
-                    //unlink($csvPath);*/
-
-                    return new JsonResponse(["authorized" => true, "status" => true ]);
-
+                        $mailer->send($message);
+                        return new JsonResponse(["authorized" => true, "status" => true ]);
+                    }else{
+                        return new JsonResponse(["authorized" => true, "status" => false ]);
                     }
-
+                }
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
