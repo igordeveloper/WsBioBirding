@@ -32,40 +32,48 @@ class CatalogController extends Controller
                 $locationHelper = new LocationHelper();
                 $l = $locationHelper->check($request->get("latitude"), $request->get("longitude"));
 
-                $user = $this->getDoctrine()->getRepository(User::class)->find($request->get("rg"));
-                $species = $this->getDoctrine()->getRepository(Species::class)->find($request->get("species"));
+                if($l["country"] == "Brasil"){
 
-                $dateImmutable = new \DateTime();
-                $dateImmutable->setTimestamp($request->get("timestamp"));
+                    $user = $this->getDoctrine()->getRepository(User::class)->find($request->get("rg"));
+                    $species = $this->getDoctrine()->getRepository(Species::class)->find($request->get("species"));
 
-
-                $catalog = new Catalog();
-                $catalog->setUser($user);
-                $catalog->setSpecies($species);
-                $catalog->setAge($request->get("age"));
-                $catalog->setSex($request->get("sex"));
-                $catalog->setLatitude($request->get("latitude"));
-                $catalog->setLongitude($request->get("longitude"));
-                $catalog->setTemperature($w["temperature"]);
-                $catalog->setHumidity($w["humidity"]);
-                $catalog->setWind($w["windSpeed"]);
-                $catalog->setWeather($w["weather"]);
-                $catalog->setDate($dateImmutable);
-                $catalog->setNotes(empty($request->get("notes")) ? NULL : $request->get("notes"));
-                $catalog->setIdentificationCode(empty($request->get("identificationCode")) ? NULL : $request->get("identificationCode"));
-                $catalog->setNeighborhood($l["neighborhood"]);
-                $catalog->setCity($l["city"]);
-                $catalog->setState($l["state"]);
+                    $dateImmutable = new \DateTime();
+                    $dateImmutable->setTimestamp($request->get("timestamp"));
 
 
-                $entityManager = $this->getDoctrine()->getManager();
-                $entityManager->persist($catalog);
-                $entityManager->flush();
+                    $catalog = new Catalog();
+                    $catalog->setUser($user);
+                    $catalog->setSpecies($species);
+                    $catalog->setAge($request->get("age"));
+                    $catalog->setSex($request->get("sex"));
+                    $catalog->setLatitude($request->get("latitude"));
+                    $catalog->setLongitude($request->get("longitude"));
+                    $catalog->setTemperature($w["temperature"]);
+                    $catalog->setHumidity($w["humidity"]);
+                    $catalog->setWind($w["windSpeed"]);
+                    $catalog->setWeather($w["weather"]);
+                    $catalog->setDate($dateImmutable);
+                    $catalog->setNotes(empty($request->get("notes")) ? NULL : $request->get("notes"));
+                    $catalog->setIdentificationCode(empty($request->get("identificationCode")) ? NULL : $request->get("identificationCode"));
+                    $catalog->setNeighborhood($l["neighborhood"]);
+                    $catalog->setCity($l["city"]);
+                    $catalog->setState($l["state"]);
 
-                return new JsonResponse([
-                            "authorized" => true,
-                            "status" => true
-                            ]);
+                    $entityManager = $this->getDoctrine()->getManager();
+                    $entityManager->persist($catalog);
+                    $entityManager->flush();
+
+                    return new JsonResponse([
+                                "authorized" => true,
+                                "status" => true
+                                ]);
+                }else{
+                    return new JsonResponse([
+                                "authorized" => true,
+                                "status" => false
+                                ]);
+                }
+
             }else{
                 return new JsonResponse(["authorized" => false]); 
             }
