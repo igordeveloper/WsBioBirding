@@ -7,12 +7,16 @@ update: Registro atualizado com sucesso
 not_found: Registro não encontrado
 empty: não pode ser nulo
 not_authorized: não autorizado
-Hello: Olá
+hello: Olá
+welcome: Seja bem vindo!
 msg_new_password: Segue abaixo sua nova senha de acesso. É aconselhável alterar a senha no primeiro acesso no menu editar perfil do aplicativo.
+msg_new_user: Segue abaixo credenciais de acesso para acessar o aplicativo. É aconselhável alterar a senha no primeiro acesso no menu editar perfil do aplicativo.
 msg_new_report: Segue anexo relatório de avistamentos.
 regards: Atenciosamente
 sendPassword: A nova senha foi enviada para o endereço  de e-mail informado
 invalidEmail: O e-mail informado não esta cadastrado.
+nickname: nickname
+password: Senha
 
 
 species_duplicate_entry: Espécie duplicada. Esta espécie já esta cadastrada na base de dados.
