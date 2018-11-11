@@ -15,7 +15,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 class UserController extends Controller
 {
 
-    public function insert(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    public function insert(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator, \Swift_Mailer $mailer)
     {
         
         try{
@@ -40,6 +40,22 @@ class UserController extends Controller
 
                 $entityManager->persist($user);
                 $entityManager->flush();
+
+                $message = (new \Swift_Message("BioBirding"))
+                    ->setFrom("igor.kusmitsch@gmail.com")
+                    ->setTo($request->get("email"))
+                    ->setBody(
+                        $this->renderView( "emails/new_user.html.twig",
+                                            array(
+                                                "fullName" => $request->get("fullName"),
+                                                "nickname" => $request->get("nickname"),
+                                                "password" => $request->get("password")
+                                            )
+                        ),
+                        "text/html"
+                );
+
+                $mailer->send($message);
 
                 return new JsonResponse(["authorized" => true, "response" => true]);
             }else{
