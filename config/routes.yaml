@@ -76,6 +76,11 @@ user_recover_password:
     controller: App\Controller\UserController::recoverPassword
     methods: [HEAD, GET, POST]
 
+user_select_all:
+    path: user/selectAll
+    controller: App\Controller\UserController::selectAll
+    methods: [HEAD, GET, POST]
+
 
 catalog_insert:
     path: catalog/insert
