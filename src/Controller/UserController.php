@@ -15,7 +15,7 @@ use Symfony\Component\Translation\TranslatorInterface;
 class UserController extends Controller
 {
 
-    public function insert(Request $request, AutenticateHelper $autenticate)
+    public function insert(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
         
         try{
@@ -55,6 +55,33 @@ class UserController extends Controller
         }catch(\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex){
         }catch(\Doctrine\ORM\ORMException $ex){
 
+        }
+
+    }
+
+    public function selectAll(Request $request, AutenticateHelper $autenticate)
+    {
+        try{
+            if($autenticate->verify($request->headers->get("authorizationCode"))){
+                $users = $this->getDoctrine()->getRepository(User::class)->findAll();
+
+                $list = array();
+
+                foreach ($users as $user) {
+
+                    $list[] = array(
+                        "rg" => $user->getRg(), 
+                        "name" => $user->getFullName(),
+                        "accessLevel" => $user->getAccessLevel()->getDescription()
+                    );         
+                }
+
+                return new JsonResponse(["authorized" => true , "users" => $list]);
+            }else{
+                return new JsonResponse(["authorized" => false]); 
+            }
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
         }
 
     }
