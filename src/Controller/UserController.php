@@ -71,7 +71,7 @@ class UserController extends Controller
 
                     $list[] = array(
                         "rg" => $user->getRg(), 
-                        "name" => $user->getFullName(),
+                        "fullName" => $user->getFullName(),
                         "accessLevel" => $user->getAccessLevel()->getAccessLevel()
                     );         
                 }
