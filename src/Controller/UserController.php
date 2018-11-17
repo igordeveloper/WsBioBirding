@@ -54,7 +54,7 @@ class UserController extends Controller
                         ->setEmail($request->get("email"))
                         ->setNickName($request->get("nickname"))
                         ->setPassword(hash("sha256", $request->get("password")))
-                        ->setCrBio($request->get("crBio"))
+                        ->setCrBio(empty($request->get("crBio")) || $request->get("crBio") == NULL ? NULL : $request->get("crBio"))
                         ->setAccessLevel($accessLevel)
                         ->setEnabled(true);
 
