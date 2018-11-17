@@ -175,7 +175,7 @@ class UserController extends Controller
                         "email" => $user->getEmail(),
                         "enabled" => $user->getEnabled(),
                         "accessLevel" => $user->getAccessLevel()->getAccessLevel(),
-                        "crBio" => empty($user->getCrBio()) ? "" : $species->getCrBio()
+                        "crBio" => empty($user->getCrBio()) ? "" : $user->getCrBio()
                     );
                 }else{
                     throw new \Doctrine\ORM\ORMException($translator->trans("invalid_user"));
