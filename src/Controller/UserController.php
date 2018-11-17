@@ -118,13 +118,20 @@ class UserController extends Controller
 
                 $entityManager = $this->getDoctrine()->getManager();
                 $user = $this->getDoctrine()->getRepository(User::class)->findByRg($request->get("rg"));
+                $accessLevel = $entityManager->getRepository(AccessLevel::class)->find($request->get("accessLevel"));
 
                 if($user){
+
+                    if($request->get("enabled") == "true"){
+                        $status = true;
+                    }else{
+                        $status = false;
+                    }
 
                     $user->setFullName($request->get("fullName"))
                         ->setCrBio(empty($request->get("crBio")) || $request->get("crBio") == NULL ? NULL : $request->get("crBio"))
                         ->setAccessLevel($accessLevel)
-                        ->setEnabled($request->get("enabled"));
+                        ->setEnabled($status);
 
                     $entityManager->flush();
 
