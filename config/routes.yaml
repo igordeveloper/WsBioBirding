@@ -103,6 +103,18 @@ catalog_select_count:
     controller: App\Controller\CatalogController::selectCount
     methods: [HEAD, GET, POST]    
 
+catalog_select_identification_code:
+    path: catalog/selectByIdentificationCode
+    controller: App\Controller\CatalogController::selectByIdentificationCode
+    methods: [HEAD, GET, POST]
+
+catalog_select_state_group:
+    path: catalog/selectStateGroup
+    controller: App\Controller\CatalogController::selectStateGroup
+    methods: [HEAD, GET, POST]    
+
+
+
 log_last_species_update:
     path: log/lastSpeciesUpdate
     controller: App\Controller\LogController::lastSpeciesUpdate
