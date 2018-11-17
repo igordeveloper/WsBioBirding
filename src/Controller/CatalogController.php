@@ -106,8 +106,86 @@ class CatalogController extends Controller
 
                 if($catalog){
                     return new JsonResponse(["authorized" => true , "count" => $catalog[1]]);
+                }
+            }else{
+                return new JsonResponse(["authorized" => false]);  
+            }
+        }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\TypeError $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\ORM\ORMException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
+        }
+    }
+
+
+    public function selectByIdentificationCode(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    {
+        try{
+            if($autenticate->verify($request->headers->get("authorizationCode"))){
+
+                $user = $this->getDoctrine()->getRepository(User::class)->find($request->get("rg"));
+                $species = $this->getDoctrine()->getRepository(Species::class)->find($request->get("species"));
+
+                if($request->get('accessLevel') < 3){
+                    $catalog = $this->getDoctrine()->getRepository(Catalog::class)
+                                ->selectByIdentificationCode($request->get("identificationCode"),
+                                        $species);
                 }else{
-                    return new JsonResponse(["authorized" => false]); 
+                    $catalog = $this->getDoctrine()->getRepository(Catalog::class)
+                                ->selectByIdentificationCodeRg($request->get("identificationCode"),
+                                        $species, $user);
+                }
+
+
+                if($catalog){
+
+                    foreach ($catalog as $value) {
+                        $list[] = array(
+                            "id" => $value->getId(), 
+                            "identificationCode" => $value->getIdentificationCode()
+                        );
+                    }
+                    return new JsonResponse(["authorized" => true , "list" => $list]);
+                }else{
+                    return new JsonResponse(["authorized" => true , "list" => NULL]);
+                }
+
+            }else{
+                
+            }
+        }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\TypeError $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\ORM\ORMException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
+        }
+    }
+
+
+    public function selectStateGroup(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    {
+        try{
+            if($autenticate->verify($request->headers->get("authorizationCode"))){
+
+                $catalog = $this->getDoctrine()->getRepository(Catalog::class)->stateGroup();
+
+                if($catalog){
+
+                    foreach ($catalog as $value) {
+                        $list[] = array(
+                            "state" => $value
+                        );
+                    }
+                    return new JsonResponse(["authorized" => true , "list" => $list]);
+                }else{
+                    return new JsonResponse(["authorized" => true , "list" => NULL]);
                 }
 
             }else{
