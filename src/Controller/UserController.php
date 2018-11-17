@@ -30,7 +30,7 @@ class UserController extends Controller
 
                 $user = new User();
                 $user->setRg($request->get("rg"))
-                        ->setFullName($request->get("full_name"))
+                        ->setFullName($request->get("fullName"))
                         ->setEmail($request->get("email"))
                         ->setNickName($request->get("nickname"))
                         ->setPassword(hash("sha256", $request->get("password")))
