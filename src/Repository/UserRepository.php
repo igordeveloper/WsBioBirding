@@ -26,7 +26,7 @@ class UserRepository extends ServiceEntityRepository
     public function checkToken(string $value, string $password, int $accessLevel)
     {
         return $this->createQueryBuilder('u')
-            ->where('u.rg = :value')
+            ->andWhere('u.rg = :value')
             ->andWhere('u.password = :password')
             ->andWhere('u.enabled = :enabled')
             ->andWhere('u.access_level = :accessLevel')
