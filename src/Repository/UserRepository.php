@@ -77,8 +77,13 @@ class UserRepository extends ServiceEntityRepository
             ->getOneOrNullResult();
     }
 
-
-
+    /**
+     * @return User Returns a User object
+     */
+    public function findAll()
+    {
+        return $this->findBy(array(), array('fullName' => 'ASC'));
+    }
 
     
 }
