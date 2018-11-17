@@ -28,8 +28,12 @@ class UserRepository extends ServiceEntityRepository
         return $this->createQueryBuilder('u')
             ->where('u.rg = :value')
             ->andWhere('u.password = :password')
+            ->andWhere('u.enabled = :enabled')
+            ->andWhere('u.access_level = :accessLevel')
             ->setParameter('value', $value)
             ->setParameter('password', $password)
+            ->setParameter('enabled', $enabled)
+            ->setParameter('accessLevel', $accessLevel)
             ->getQuery()
             ->getOneOrNullResult();
     }
