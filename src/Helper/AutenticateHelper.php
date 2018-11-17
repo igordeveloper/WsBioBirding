@@ -20,7 +20,7 @@ class AutenticateHelper
         $authorization = base64_decode($authorization);
         $temporary = explode("||", $authorization);
 
-        $user = $this->em->getRepository(User::class)->checkToken($temporary[0], $temporary[1]);
+        $user = $this->em->getRepository(User::class)->checkToken($temporary[0], $temporary[1], $temporary[2]);
          if($user){
             return true;
          }else{
