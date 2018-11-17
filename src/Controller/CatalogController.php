@@ -180,7 +180,7 @@ class CatalogController extends Controller
 
                     foreach ($catalog as $value) {
                         $list[] = array(
-                            "state" => $value
+                            "state" => $value['state']
                         );
                     }
                     return new JsonResponse(["authorized" => true , "list" => $list]);
