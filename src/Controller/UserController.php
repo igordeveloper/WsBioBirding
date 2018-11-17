@@ -92,6 +92,43 @@ class UserController extends Controller
 
     }
 
+
+    public function select(Request $request, AutenticateHelper $autenticate){
+        try{
+            if($autenticate->verify($request->headers->get("authorizationCode"))){
+
+                if( empty($request->get("rg")) || $request->get("rg") == NULL){
+                    throw new \TypeError("NULL rg");
+                }
+
+                $user = $this->getDoctrine()->getRepository(User::class)->findByRg($request->get("rg"));
+
+                if($user){
+                    $list = array(
+                        "fullName" => $user->getFullName(),
+                        "rg" => $user->getRg(),
+                        "nickname" => $user->getNickName(),
+                        "email" => $user->getEmail(),
+                        "enabled" => $user->getEnabled(),
+                        "accessLevel" => $user->getAccessLevel()->getAccessLevel(),
+                        "crBio" => empty($user->getCrBio()) ? "" : $species->getCrBio()
+                    );
+                }else{
+                    throw new \Doctrine\ORM\ORMException($translator->trans("invalid_user"));
+                    
+                }
+
+                return new JsonResponse(["authorized" => true , "user" => $list]);
+            }else{
+                return new JsonResponse(["authorized" => false]); 
+            }
+        }catch(\TypeError $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
+        }
+    }
+
     public function selectAll(Request $request, AutenticateHelper $autenticate)
     {
         try{
