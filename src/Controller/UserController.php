@@ -77,7 +77,7 @@ class UserController extends Controller
 
                 $mailer->send($message);
 
-                return new JsonResponse(["authorized" => true, "response" => true]);
+                return new JsonResponse(["authorized" => true, "status" => true]);
             }else{
                 return new JsonResponse(["authorized" => false]);
 
