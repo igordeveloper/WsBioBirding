@@ -29,7 +29,7 @@ class UserRepository extends ServiceEntityRepository
             ->andWhere('u.rg = :value')
             ->andWhere('u.password = :password')
             ->andWhere('u.enabled = :enabled')
-            ->andWhere('u.access_level = :accessLevel')
+            ->andWhere('u.accessLevel = :accessLevel')
             ->setParameter('value', $value)
             ->setParameter('password', $password)
             ->setParameter('enabled', 1)
