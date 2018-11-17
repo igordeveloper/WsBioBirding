@@ -86,6 +86,11 @@ user_select:
     controller: App\Controller\UserController::select
     methods: [HEAD, GET, POST]
 
+user_update:
+    path: user/update
+    controller: App\Controller\UserController::update
+    methods: [HEAD, GET, POST]
+
 
 
 catalog_insert:
