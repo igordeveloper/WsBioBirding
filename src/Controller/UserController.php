@@ -83,23 +83,11 @@ class UserController extends Controller
 
             }
         }catch(\TypeError $ex){
-            return new JsonResponse([
-                "authorized" => true,
-                "status" => false,
-                "message" => $ex->getMessage()
-            ]);
+            return new JsonResponse(["exception" => $ex->getMessage()]);
         }catch(\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex){
-            return new JsonResponse([
-                "authorized" => true,
-                "status" => false,
-                "message" => $ex->getMessage()
-            ]);
+            return new JsonResponse(["exception" => $ex->getMessage()]);
         }catch(\Doctrine\ORM\ORMException $ex){
-            return new JsonResponse([
-                "authorized" => true,
-                "status" => false,
-                "message" => $ex->getMessage()
-            ]);
+            return new JsonResponse(["exception" => $ex->getMessage()]);
         }
 
     }
