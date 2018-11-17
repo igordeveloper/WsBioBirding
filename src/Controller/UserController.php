@@ -93,6 +93,63 @@ class UserController extends Controller
     }
 
 
+    public function update(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    {
+
+        try{
+            if($autenticate->verify($request->headers->get("authorizationCode"))){
+
+                if( empty($request->get("accessLevel")) || $request->get("accessLevel") == NULL){
+                    throw new \TypeError("NULL accessLevel");
+                }
+
+                if( empty($request->get("fullName")) || $request->get("fullName") == NULL){
+                    throw new \TypeError("NULL fullName");
+                }
+
+                if( empty($request->get("rg")) || $request->get("rg") == NULL){
+                    throw new \TypeError("NULL rg");
+                }
+
+                if( empty($request->get("enabled")) || $request->get("enabled") == NULL){
+                    throw new \TypeError("NULL enabled");
+                }
+
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $user = $this->getDoctrine()->getRepository(User::class)->findByRg($request->get("rg"));
+
+                if($user){
+
+                    $user->setFullName($request->get("fullName"))
+                        ->setCrBio(empty($request->get("crBio")) || $request->get("crBio") == NULL ? NULL : $request->get("crBio"))
+                        ->setAccessLevel($accessLevel)
+                        ->setEnabled($request->get("enabled"));
+
+                    $entityManager->flush();
+
+
+                    return new JsonResponse(["authorized" => true, "status" => true]);
+
+                }else{
+                    throw new \Doctrine\ORM\ORMException($translator->trans("invalid_identifier"));
+                    
+                }   
+            }else{
+                return new JsonResponse(["authorized" => false]); 
+            }
+        }catch(\TypeError $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex){
+            return new JsonResponse(["exception" => $translator->trans("species_duplicate_entry")]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
+        }
+    }
+
+
     public function select(Request $request, AutenticateHelper $autenticate){
         try{
             if($autenticate->verify($request->headers->get("authorizationCode"))){
