@@ -25,6 +25,26 @@ class UserController extends Controller
                     throw new \TypeError("NULL password");
                 }
 
+                if( empty($request->get("accessLevel")) || $request->get("accessLevel") == NULL){
+                    throw new \TypeError("NULL accessLevel");
+                }
+
+                if( empty($request->get("fullName")) || $request->get("fullName") == NULL){
+                    throw new \TypeError("NULL fullName");
+                }
+
+                if( empty($request->get("rg")) || $request->get("rg") == NULL){
+                    throw new \TypeError("NULL rg");
+                }
+
+                if( empty($request->get("email")) || $request->get("email") == NULL){
+                    throw new \TypeError("NULL email");
+                }
+
+                if( empty($request->get("nickname")) || $request->get("nickname") == NULL){
+                    throw new \TypeError("NULL nickname");
+                }
+
                 $entityManager = $this->getDoctrine()->getManager();
                 $accessLevel = $entityManager->getRepository(AccessLevel::class)->find($request->get("accessLevel"));
 
@@ -66,11 +86,20 @@ class UserController extends Controller
             return new JsonResponse([
                 "authorized" => true,
                 "status" => false,
-                "message" => $translator->trans('exception_type_error')
+                "message" => $ex->getMessage()
             ]);
         }catch(\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex){
+            return new JsonResponse([
+                "authorized" => true,
+                "status" => false,
+                "message" => $ex->getMessage()
+            ]);
         }catch(\Doctrine\ORM\ORMException $ex){
-
+            return new JsonResponse([
+                "authorized" => true,
+                "status" => false,
+                "message" => $ex->getMessage()
+            ]);
         }
 
     }
