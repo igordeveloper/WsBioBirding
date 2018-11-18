@@ -116,6 +116,11 @@ catalog_select_state_group:
 catalog_select_city_group:
     path: catalog/selectCityGroup
     controller: App\Controller\CatalogController::selectCityGroup
+    methods: [HEAD, GET, POST]
+
+catalog_select_filter:
+    path: catalog/selectFilter
+    controller: App\Controller\CatalogController::selectFilter
     methods: [HEAD, GET, POST]    
 
 
