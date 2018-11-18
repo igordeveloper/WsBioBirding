@@ -113,6 +113,11 @@ catalog_select_state_group:
     controller: App\Controller\CatalogController::selectStateGroup
     methods: [HEAD, GET, POST]    
 
+catalog_select_city_group:
+    path: catalog/selectCityGroup
+    controller: App\Controller\CatalogController::selectCityGroup
+    methods: [HEAD, GET, POST]    
+
 
 
 log_last_species_update:
