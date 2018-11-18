@@ -103,9 +103,9 @@ catalog_select_count:
     controller: App\Controller\CatalogController::selectCount
     methods: [HEAD, GET, POST]    
 
-catalog_select_identification_code:
-    path: catalog/selectByIdentificationCode
-    controller: App\Controller\CatalogController::selectByIdentificationCode
+catalog_select:
+    path: catalog/select
+    controller: App\Controller\CatalogController::select
     methods: [HEAD, GET, POST]
 
 catalog_select_state_group:
@@ -122,6 +122,16 @@ catalog_select_filter:
     path: catalog/selectFilter
     controller: App\Controller\CatalogController::selectFilter
     methods: [HEAD, GET, POST]    
+
+catalog_update:
+    path: catalog/update
+    controller: App\Controller\CatalogController::update
+    methods: [HEAD, GET, POST]
+
+catalog_delete:
+    path: catalog/delete
+    controller: App\Controller\CatalogController::delete
+    methods: [HEAD, GET, POST]
 
 
 
