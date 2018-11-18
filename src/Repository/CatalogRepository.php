@@ -140,4 +140,20 @@ class CatalogRepository extends ServiceEntityRepository
         ;
     }
 
+    /**
+    * @return Returns an array of state group
+    */
+    public function cityGroup(string $state): ?array
+    {
+
+        return $this->createQueryBuilder('c')
+            ->select('c.city')
+            ->andWhere('c.state = :state')
+            ->setParameter('state', $state)
+            ->groupBy('c.city')
+            ->getQuery()
+            ->getResult()
+        ;
+    }
+
 }
