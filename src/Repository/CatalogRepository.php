@@ -108,42 +108,6 @@ class CatalogRepository extends ServiceEntityRepository
 
 
     /**
-    * @return array[] Returns an array of Catalog objects
-    */
-    public function selectByIdentificationCode($identificationCode, $species): ?array
-    {
-
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.identificationCode = :identificationCode')
-            ->andWhere('c.species = :species')
-            ->setParameter('identificationCode', $identificationCode)
-            ->setParameter('species', $species)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-
-    /**
-    * @return array[] Returns an array of Catalog objects
-    */
-    public function selectByIdentificationCodeRg($identificationCode, $species, $user): ?array
-    {
-
-        return $this->createQueryBuilder('c')
-            ->andWhere('c.identificationCode = :identificationCode')
-            ->andWhere('c.species = :species')
-            ->andWhere('c.user = :user')
-            ->setParameter('identificationCode', $identificationCode)
-            ->setParameter('species', $species)
-            ->setParameter('user', $user)
-            ->getQuery()
-            ->getResult()
-        ;
-    }
-
-
-    /**
     * @return Catalog[] Returns an array of Catalog objects
     */
     public function fullReport($startDate, $finishDate): ?array
