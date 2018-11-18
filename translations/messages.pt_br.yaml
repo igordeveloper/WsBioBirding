@@ -32,6 +32,7 @@ nullArguments: Não pode ser nulo ou vazio.
 invalid_user: Usuário não encontrado.
 invalid_specie: Espécie não encontrada.
 invalid_popularName: Espécie e nome popular nao encontrado.
+invalid_catalog: Catálogo inválido.
 
 
 
