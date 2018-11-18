@@ -184,6 +184,8 @@ class CatalogController extends Controller
                             "id" => $value->getId(),
                             "state" => $value->getState(),
                             "city" => $value->getCity(),
+                            "age" => $value->getAge(),
+                            "sex" => $value->getSex(),
                             "species" => $value->getSpecies()->getScientificName(),
                             "date" => date_format($value->getDate(), 'd/m/Y H:i:s')
                         );
