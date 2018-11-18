@@ -201,4 +201,40 @@ class CatalogController extends Controller
             return new JsonResponse(["exception" => $translator->trans("DBALException")]);
         }
     }
+
+
+    public function selectCityGroup(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    {
+        try{
+            if($autenticate->verify($request->headers->get("authorizationCode"))){
+
+                $catalog = $this->getDoctrine()->getRepository(Catalog::class)->cityGroup($request->get("state"));
+
+                if($catalog){
+
+                    foreach ($catalog as $value) {
+                        $list[] = array(
+                            "city" => $value['city']
+                        );
+                    }
+                    return new JsonResponse(["authorized" => true , "list" => $list]);
+                }else{
+                    return new JsonResponse(["authorized" => true , "list" => NULL]);
+                }
+
+            }else{
+                
+            }
+        }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\TypeError $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\ORM\ORMException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
+        }
+    }
+
+
 }
