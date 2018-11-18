@@ -60,6 +60,56 @@ class CatalogRepository extends ServiceEntityRepository
     /**
     * @return array[] Returns an array of Catalog objects
     */
+    public function selectFilter($rg, $state, $city, $identificationCode, $startDate, $finishDate, $species): ?array
+    {
+
+
+        $query = $this->createQueryBuilder('c');
+        $query->innerJoin('c.species', 's', 'WITH', 's.id = c.species');
+        $query->innerJoin('App\Entity\PopularName', 'p', 'WITH', 'p.species = s.id');
+        $query->andWhere('c.date BETWEEN :startDate AND :finishDate')
+            ->setParameter('startDate', $startDate)
+            ->setParameter('finishDate', $finishDate);
+
+
+        if($rg != null){
+            $query->andWhere('c.user = :rg')
+                ->setParameter('rg', $rg);            
+        }
+
+        if($identificationCode != null){
+            $query->andWhere('c.identificationCode LIKE :identificationCode')
+                ->setParameter('identificationCode', $identificationCode);            
+        }
+
+
+        if($state != null){
+        $query->andWhere('c.state LIKE :state')
+            ->setParameter('state', $state);            
+        }
+
+        if($city != null){
+        $query->andWhere('c.city LIKE :city')
+            ->setParameter('city', $city);            
+        }
+
+                        
+        if($species != null){
+        $query->andWhere('s.scientificName LIKE :species OR p.name LIKE :species')
+            ->setParameter('species', "%".$species."%");            
+        }
+
+        $query->orderBy('c.date', 'desc');
+        $query->groupBy('c.id');
+
+
+        return $query->getQuery()->getResult();
+    }
+
+
+    /**
+    * @return array[] Returns an array of Catalog objects
+    */
     public function selectByIdentificationCode($identificationCode, $species): ?array
     {
 
