@@ -129,7 +129,7 @@ class CatalogController extends Controller
 
 
 
-                if($request->get("access_level") < 3){
+                if($request->get("accessLevel") < 3){
                     $rg = NULL;
                 }
 
@@ -147,10 +147,10 @@ class CatalogController extends Controller
                 }
 
 
-                if(empty($request->get("identification_code")) OR $request->get("identification_code") == ""){
+                if(empty($request->get("identificationCode")) OR $request->get("identificationCode") == ""){
                     $identificationCode = NULL;
                 }else{
-                    $identificationCode = $request->get("identification_code");
+                    $identificationCode = $request->get("identificationCode");
                 }
 
 
