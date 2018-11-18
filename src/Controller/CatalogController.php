@@ -210,45 +210,52 @@ class CatalogController extends Controller
     }
 
 
-    public function selectByIdentificationCode(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+
+    public function select(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
+
         try{
             if($autenticate->verify($request->headers->get("authorizationCode"))){
 
-                $user = $this->getDoctrine()->getRepository(User::class)->find($request->get("rg"));
-                $species = $this->getDoctrine()->getRepository(Species::class)->find($request->get("species"));
-
-                if($request->get('accessLevel') < 3){
-                    $catalog = $this->getDoctrine()->getRepository(Catalog::class)
-                                ->selectByIdentificationCode($request->get("identificationCode"),
-                                        $species);
-                }else{
-                    $catalog = $this->getDoctrine()->getRepository(Catalog::class)
-                                ->selectByIdentificationCodeRg($request->get("identificationCode"),
-                                        $species, $user);
+                if(empty($request->get("id")) OR $request->get("id") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[id] " . $translator->trans("nullArguments"));
                 }
 
-
-                if($catalog){
-
-                    foreach ($catalog as $value) {
-                        $list[] = array(
-                            "id" => $value->getId(), 
-                            "identificationCode" => $value->getIdentificationCode()
-                        );
-                    }
-                    return new JsonResponse(["authorized" => true , "list" => $list]);
-                }else{
-                    return new JsonResponse(["authorized" => true , "list" => NULL]);
-                }
-
-            }else{
+                $catalog = $this->getDoctrine()->getRepository(Catalog::class)
+                            ->find($request->get("id"));
                 
+                if($catalog){
+                    $list = array(
+                        "id" => $catalog->getId(),
+                        "species" => $catalog->getSpecies()->getId(),
+                        "latitude" => $catalog->getLatitude(),
+                        "laongitude" => $catalog->getLongitude(), 
+                        "age" => $catalog->getAge(),
+                        "sex" => $catalog->getSex(),
+                        "temperature" => $catalog->getTemperature(),
+                        "humidity" => $catalog->getHumidity(),
+                        "wind" => $catalog->getWind(),
+                        "weather" => $catalog->getWeather(),
+                        "notes" => $catalog->getNotes(),
+                        "identificationCode" => $catalog->getIdentificationCode(),
+                        "neighborhood" => $catalog->getNeighborhood(),
+                        "city" => $catalog->getCity(),
+                        "state" => $catalog->getState()
+
+                    );
+                }else{
+                    throw new \Doctrine\ORM\ORMException($translator->trans("invalid_catalog"));
+                    
+                }
+
+                return new JsonResponse(["authorized" => true , "catalog" => $list]);
+            }else{
+                return new JsonResponse(["authorized" => false]); 
             }
         }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
             return new JsonResponse(["exception" => $ex->getMessage()]);
         }catch(\TypeError $ex){
-            return new JsonResponse(["exception" => $ex->getMessage()]);
+            return new JsonResponse(["exception" => $translator->trans("exception_type_error")]);
         }catch(\Doctrine\ORM\ORMException $ex){
             return new JsonResponse(["exception" => $ex->getMessage()]);
         }catch(\Doctrine\DBAL\DBALException $ex){
@@ -317,6 +324,105 @@ class CatalogController extends Controller
             return new JsonResponse(["exception" => $ex->getMessage()]);
         }catch(\TypeError $ex){
             return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\ORM\ORMException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $translator->trans("DBALException")]);
+        }
+    }
+
+
+    public function update(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    {
+
+        try{
+            if($autenticate->verify($request->headers->get("authorizationCode"))){
+
+                if(empty($request->get("id")) OR $request->get("id") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[id] " . $translator->trans("nullArguments"));
+                }
+
+                if(empty($request->get("species")) OR $request->get("species") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[species] " . $translator->trans("nullArguments"));
+                }
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $catalog = $entityManager->getRepository(Catalog::class)
+                            ->find($request->get("id"));
+                $species = $this->getDoctrine()->getRepository(Species::class)
+                            ->find($request->get("species"));
+
+                if($catalog){
+
+                    $catalog->setSpecies($species);
+                    $catalog->setAge($request->get("age"));
+                    $catalog->setSex($request->get("sex"));
+                    $catalog->setLatitude($request->get("latitude"));
+                    $catalog->setLongitude($request->get("longitude"));
+                    $catalog->setTemperature($request->get("temperature"));
+                    $catalog->setHumidity($request->get("humidity"));
+                    $catalog->setWind($request->get("windSpeed"));
+                    $catalog->setWeather($request->get("weather"));
+                    $catalog->setNotes(empty($request->get("notes")) ? NULL : $request->get("notes"));
+                    $catalog->setIdentificationCode(empty($request->get("identificationCode")) ? NULL : $request->get("identificationCode"));
+                    $catalog->setNeighborhood($request->get("neighborhood"));
+                    $catalog->setCity($request->get("city"));
+                    $catalog->setState($request->get("state"));
+
+                    $entityManager->flush();
+
+                    return new JsonResponse(["authorized" => true, "status" => true]);
+
+                }else{
+                    throw new \Doctrine\ORM\ORMException($translator->trans("invalid_identifier"));
+                    
+                }   
+            }else{
+                return new JsonResponse(["authorized" => false]); 
+            }
+        }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\Exception\UniqueConstraintViolationException $ex){
+            return new JsonResponse(["exception" => $translator->trans("species_duplicate_entry")]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\ORM\ORMException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }
+    }
+
+    public function delete(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    {
+
+        try{
+            if($autenticate->verify($request->headers->get('authorizationCode'))){
+            
+
+                if(empty($request->get("id")) OR $request->get("id") == NULL){
+                    throw new \Doctrine\DBAL\Exception\InvalidArgumentException("[id] " . $translator->trans("nullArguments"));
+                }
+
+
+                $entityManager = $this->getDoctrine()->getManager();
+                $catalog = $entityManager->getRepository(Catalog::class)
+                            ->find($request->get("id"));
+
+                if(!$catalog) {
+                    throw new \Doctrine\ORM\ORMException($translator->trans("invalid_catalog"));
+                }else{
+                    $entityManager->remove($catalog);
+                    $entityManager->flush();
+
+                    return new JsonResponse([
+                                    'authorized' => true,
+                                    'status' => true
+                                    ]);
+                }
+            }else{
+                return new JsonResponse(['authorized' => false]); 
+            }
+        }catch(\TypeError | \Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+            return new JsonResponse(['exception' => $ex->getmessage()]);
         }catch(\Doctrine\ORM\ORMException $ex){
             return new JsonResponse(["exception" => $ex->getMessage()]);
         }catch(\Doctrine\DBAL\DBALException $ex){
