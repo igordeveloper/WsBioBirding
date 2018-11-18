@@ -122,6 +122,92 @@ class CatalogController extends Controller
     }
 
 
+    public function selectFilter(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
+    {
+        try{
+            if($autenticate->verify($request->headers->get("authorizationCode"))){
+
+
+
+                if($request->get("access_level") < 3){
+                    $rg = NULL;
+                }
+
+
+                if(empty($request->get("state")) OR $request->get("state") == ""){
+                    $state = NULL;
+                }else{
+                    $state = $request->get("state");
+                }
+
+                if(empty($request->get("city")) OR $request->get("city") == ""){
+                    $city = NULL;
+                }else{
+                    $city = $request->get("city");
+                }
+
+
+                if(empty($request->get("identification_code")) OR $request->get("identification_code") == ""){
+                    $identificationCode = NULL;
+                }else{
+                    $identificationCode = $request->get("identification_code");
+                }
+
+
+                if(empty($request->get("species")) OR $request->get("species") == ""){
+                    $species = NULL;
+                }else{
+                    $species = $request->get("species");
+                }
+
+
+                $startDate = $request->get("startDate") . " 00:00:00";
+                $finishDate = $request->get("finishDate") . " 23:59:59";
+
+
+                $catalog = $this->getDoctrine()->getRepository(Catalog::class)
+                                ->selectFilter($rg,
+                                            $state,
+                                            $city,
+                                            $identificationCode,
+                                            $startDate,
+                                            $finishDate,
+                                            $species);
+
+                if($catalog){
+
+                    foreach ($catalog as $value) {
+
+
+
+                        $list[] = array(
+                            "id" => $value->getId(),
+                            "state" => $value->getState(),
+                            "city" => $value->getCity(),
+                            "species" => $value->getSpecies()->getScientificName(),
+                            "date" => date_format($value->getDate(), 'd/m/Y H:i:s')
+                        );
+                    }
+                    return new JsonResponse(["authorized" => true , "list" => $list]);
+                }else{
+                    return new JsonResponse(["authorized" => true , "list" => NULL]);
+                }
+
+            }else{
+                
+            }
+        }catch(\Doctrine\DBAL\Exception\InvalidArgumentException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\TypeError $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\ORM\ORMException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }catch(\Doctrine\DBAL\DBALException $ex){
+            return new JsonResponse(["exception" => $ex->getMessage()]);
+        }
+    }
+
+
     public function selectByIdentificationCode(Request $request, AutenticateHelper $autenticate, TranslatorInterface $translator)
     {
         try{
