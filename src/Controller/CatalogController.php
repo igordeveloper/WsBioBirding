@@ -236,12 +236,11 @@ class CatalogController extends Controller
                         "humidity" => $catalog->getHumidity(),
                         "wind" => $catalog->getWind(),
                         "weather" => $catalog->getWeather(),
-                        "notes" => $catalog->getNotes(),
-                        "identificationCode" => $catalog->getIdentificationCode(),
-                        "neighborhood" => $catalog->getNeighborhood(),
-                        "city" => $catalog->getCity(),
-                        "state" => $catalog->getState()
-
+                        "notes" => empty($catalog->getNotes()) ? "" : $catalog->getNotes(),
+                        "identificationCode" => empty($catalog->getIdentificationCode()) ? "" : $catalog->getIdentificationCode(),
+                        "neighborhood" => empty($catalog->getNeighborhood()) ? "" : $catalog->getNeighborhood(),
+                        "city" => empty($catalog->getCity()) ? "" : $catalog->getCity(),
+                        "state" => empty($catalog->getState()) ? "" : $catalog->getState()
                     );
                 }else{
                     throw new \Doctrine\ORM\ORMException($translator->trans("invalid_catalog"));
