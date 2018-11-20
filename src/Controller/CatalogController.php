@@ -229,7 +229,7 @@ class CatalogController extends Controller
                         "id" => $catalog->getId(),
                         "species" => $catalog->getSpecies()->getId(),
                         "latitude" => $catalog->getLatitude(),
-                        "laongitude" => $catalog->getLongitude(), 
+                        "longitude" => $catalog->getLongitude(), 
                         "age" => $catalog->getAge(),
                         "sex" => $catalog->getSex(),
                         "temperature" => $catalog->getTemperature(),
