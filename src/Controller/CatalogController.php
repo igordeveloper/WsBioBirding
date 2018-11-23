@@ -132,7 +132,7 @@ class CatalogController extends Controller
                 if($request->get("accessLevel") < 3){
                     $rg = NULL;
                 }else{
-                    $rg = $request->get("rg")
+                    $rg = $request->get("rg");
                 }
 
 
