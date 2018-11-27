@@ -188,6 +188,7 @@ class CatalogController extends Controller
                             "city" => $value->getCity(),
                             "age" => $value->getAge(),
                             "sex" => $value->getSex(),
+                            "userFullName" => $value->getUser()->getFullName(),
                             "species" => $value->getSpecies()->getScientificName(),
                             "date" => date_format($value->getDate(), 'd/m/Y H:i:s')
                         );
@@ -229,6 +230,7 @@ class CatalogController extends Controller
                 if($catalog){
                     $list = array(
                         "id" => $catalog->getId(),
+                        "userFullName" => $catalog->getUser()->getFullName(),
                         "species" => $catalog->getSpecies()->getId(),
                         "latitude" => $catalog->getLatitude(),
                         "longitude" => $catalog->getLongitude(), 
